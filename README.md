@@ -187,5 +187,8 @@ Here's a bit more detail on some of the less obvious inputs to clarify:
 * `-bilat_filt_szs` is the square window size to apply for [bilateral filtering](https://docs.opencv.org/3.1.0/d4/d13/tutorial_py_filtering.html), with the aim of further smoothing the image while preserving interstices between the grains. The size of this filter window should be reduced with the windowing scale. The default values are also good here.
 * `-tophat_th`, `-sobel_th`, and `-canny_sig` are the [tophat](http://scikit-image.org/docs/dev/api/skimage.morphology.html#skimage.morphology.black_tophat) filter percentile threshold, [Sobel](http://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.sobel) filter percentile threshold, and [Canny](http://scikit-image.org/docs/dev/auto_examples/edges/plot_canny.html) edge detection smoothing standard deviation. These are the values used on edge detection from the gray-scale image and are probably good at the default value. The same value is used for each scale.
 
+### Note on ortho-imagery
+Georeferenced ortho-photos should be in a UTM projection, providing the scale in meters.
+
 # Running PebbleCounts
 Now you're ready to run an image. Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. For higher resolution (sub-mm) imagery it's recommended not to go above 1 by 1 meters. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. Head-over to the [full manual](docs/PebbleCounts_Manual_Nov2018.md) for a step-by-step guide to running PebbleCounts for a given image
