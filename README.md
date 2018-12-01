@@ -9,6 +9,8 @@ PebbleCounts is a Python based application for the identification and sizing of 
 
 Happy clicking!
 
+**[FULL MANUAL]**(docs/PebbleCounts_Manual_Nov2018.md)
+
 ## Disclaimer
 PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have problems installing or running the software *please* contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
 
