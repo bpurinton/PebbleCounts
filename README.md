@@ -17,7 +17,7 @@ To briefly summarize, PebbleCounts pre-processes the image by allowing the user 
 
 At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential separate pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the [full manual](docs/PebbleCounts_Manual_Nov2018.md) for the example). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
 
-![Flow chart of PebbleCounts. The boxes are user supplied input or output from the algorithm. Dashed lines indicate a user input step during processing, either entering and checking values or clicking.\label{Fig:pebblecounts_flowchart}](figs/pebblecounts_flowchart.png  =100x20)
+![Flow chart of PebbleCounts. The boxes are user supplied input or output from the algorithm. Dashed lines indicate a user input step during processing, either entering and checking values or clicking.\label{Fig:pebblecounts_flowchart}](docs/figs/pebblecounts_flowchart.png  =100x20)
 
 # Installation
 The first step is downloading the GitHub repository somewhere on your computer. The folder should contain:
