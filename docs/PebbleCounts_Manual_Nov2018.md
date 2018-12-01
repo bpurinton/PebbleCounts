@@ -13,9 +13,10 @@ Happy clicking!
 PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have problems installing or running the software *please* contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
 
 # Overview
-PebbleCounts can be summed up in the flow chart shown in (Figure \ref{Fig:pebblecounts_flowchart}). To briefly summarize, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively mask shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum grain size provided by the user. This multi-scale approach allows the algorithm to "burrow" through the grain size distribution beginning by removing the largest grains and ending on the smallest, with the medium sizes in between. At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential separate pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the below section **Running PebbleCounts** for the example). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
+PebbleCounts can be summed up in the flow chart shown in **Flowchart for PebbleCounts**. To briefly summarize, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively mask shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum grain size provided by the user. This multi-scale approach allows the algorithm to "burrow" through the grain size distribution beginning by removing the largest grains and ending on the smallest, with the medium sizes in between. At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential separate pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the below section **Running PebbleCounts** for the example). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
 
-![Flow chart of PebbleCounts. The boxes are user supplied input or output from the algorithm. Dashed lines indicate a user input step during processing, either entering and checking values or clicking.\label{Fig:pebblecounts_flowchart}](figs/pebblecounts_flowchart.png)
+### Flowchart for PebbleCounts
+<img src="docs/figs/pebblecounts_flowchart.png" width="400">
 
 # Installation
 The first step is downloading the GitHub repository somewhere on your computer. The folder should contain:
@@ -202,9 +203,11 @@ Now you're ready to run an image. Because PebbleCounts doesn't allow you to save
         ```
         **Note:** I've changed some of the default values for `-min_sz_factors` (doubled the default), since the resolution of this imagery is sub-mm.
 
-2. Interactively subset the image by typing `y` (Figure \ref{Fig:pc_01_subsetting}) or don't by typing `n`. If you do subset, click and drag a box on the pop-up window and press the *spacebar* to close the window again.
+2. Interactively subset the image by typing `y` or don't by typing `n`. If you do subset, click and drag a box on the pop-up window and press the *spacebar* to close the window again.
 
-![Interactive subsetting of full image. Click and drag a rectangle then press the *spacebar*.\label{Fig:pc_01_subsetting}](figs/pc_01_subsetting.png)
+![](figs/pc_01_subsetting.png)
+Interactive subsetting of full image. Click and drag a rectangle then press the *spacebar*.
+
 
 3. Input a percentage (0-100) of the [Otsu](https://en.wikipedia.org/wiki/Otsu%27s_method) shadow threshold value, then press enter. This will open a pop-up window displaying the image with the Otsu mask in white (Figure \ref{Fig:pc_02_otsu50}). On the keyboard press *r* to flash the original un-masked image, *y* to accept the mask and move on, and *n* to close the window and enter a new value.
 
