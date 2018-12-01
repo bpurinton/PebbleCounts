@@ -189,7 +189,7 @@ Here's a bit more detail on some of the less obvious inputs to clarify:
 Now you're ready to run an image. Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. For higher resolution (sub-mm) imagery it's recommended not to go above 1 by 1 meters. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. If at anytime you want to end the application simply press *CTRL + C*.
 
 ### Note on ortho-imagery
-Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the (gdal)[https://www.gdal.org/] command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject)
+Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject)
 
 ## Step-by-step
 1. Depending on whether you're going to use an ortho or non-ortho image run one of the following commands:
@@ -287,7 +287,7 @@ PebbleCounts saves out a few outputs in the same folder that the image resides:
 * label image (geo-referenced if ortho image): filename_PebbleCounts_LABELS.tif
 * figure showing the fit ellipses and potential rock type: filename_PebbleCounts_FIGURE.png
 
-The results .csv has a line for each grain showing the fraction of the scene not measured (combined background shadow, color masked area, and unmeasured grains) the fraction of the scene that was selected by the color mask as background color (sand perhaps) and each grains' characteristics including a- and b-axis of the fit ellipse in pixels and in meters, the area covered by the grain mask in pixels and square meters, the orientation of the fit ellipse measured from -$\pi$/2 to $\pi$/2 relative to the positive x-axis (orientation=0) in cartesian coordinates. If the input imagery is georeferenced the UTM Northing (Y) and Easting (X) coordinates of the pebble's centroid are be provided:
+The results .csv has a line for each grain showing the fraction of the scene not measured (combined background shadow, color masked area, and unmeasured grains) the fraction of the scene that was selected by the color mask as background color (sand perhaps) and each grains' characteristics including a- and b-axis of the fit ellipse in pixels and in meters, the area covered by the grain mask in pixels and square meters, the orientation of the fit ellipse measured from -π/2 to π/2 relative to the positive x-axis (orientation=0) in cartesian coordinates. If the input imagery is georeferenced the UTM Northing (Y) and Easting (X) coordinates of the pebble's centroid are be provided:
 ```
 perc. not meas.,perc. background color,a (px),b (px),a (m),b (m),area (px),area (m2),orientation,lithology
 0.17551331897681643,0,111.9574708212346,102.05260381916898,0.0705332066173778,0.06429314040607646,8247,0.0032732343,-0.7792965483663533,0
