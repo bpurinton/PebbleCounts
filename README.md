@@ -5,7 +5,7 @@ author: "Ben Purinton ([purinton@uni-potsdam.de](purinton@uni-potsdam.de))"
 ---
 
 # Introduction to PebbleCounts
-PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. If you really want some deeper background on the problem of grain size measurement from imagery and the testing of PebbleCounts, check out the publication accompanying the algorithm: PUBLICATION DOI. And cite it if you use the algorithm in your own work.
+PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. If you really want some deeper background on the problem of grain size measurement from imagery and the testing of PebbleCounts, check out the publication accompanying the algorithm: **PUBLICATION DOI TO BE ADDED**. And cite it if you use the algorithm in your own work.
 
 Happy clicking!
 
