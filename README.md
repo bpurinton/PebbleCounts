@@ -17,18 +17,20 @@ To briefly summarize, PebbleCounts pre-processes the image by allowing the user 
 
 At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential separate pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the [full manual](docs/PebbleCounts_Manual_Nov2018.md) for the example). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
 
+![Flow chart of PebbleCounts. The boxes are user supplied input or output from the algorithm. Dashed lines indicate a user input step during processing, either entering and checking values or clicking.\label{Fig:pebblecounts_flowchart}](figs/pebblecounts_flowchart.png  =100x20)
+
 # Installation
 The first step is downloading the GitHub repository somewhere on your computer. The folder should contain:
 1. Three Python scripts: PebbleCounts.py, PCfunctions.py, calculate_camera_resolution.py
 2. An `environment.yml` file containing the Python dependencies
 3. A folder `example_data` with two example images one orthorectified and the other raw
-4. A folder `docs` containing this manual
+4. A folder `docs` containing the [full manual](docs/PebbleCounts_Manual_Nov2018.md)
 
 ## For the Pros
 For those familiar with Python, the best way to install PebbleCounts is by simply downloading the GitHub repository, navigating to the PebbleCounts folder at the command line, ensuring all Python dependencies are installed (see the `environment.yml` file) and getting started by skipping ahead to **Command-line Options**
 
 ## For Newbies 
-For newcomers to Python, no worries! Installation should be a cinch on most machines and I'll describe it here for Windows. First of all you`ll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). 
+For newcomers to Python, no worries! Installation should be a cinch on most machines and I'll describe it here for Windows. First of all you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). 
 
 Download either the 32- or 64-bit installer of Python 3.x then follow the installation instructions. It's recommend to add Miniconda to the system `PATH` variable when prompted. PebbleCounts has a number of important dependencies including [gdal](https://www.gdal.org/) for geo-referenced raster manipulation, [openCV](https://opencv.org/) for image manipulation and GUI operation, [scikit-image](https://scikit-image.org/) for filtering and measuring, [scikit-learn](https://scikit-learn.org/stable/) for k-means segmentation, along with a number of standard Python libraries including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [matplotlib](https://matplotlib.org/), and [tkinter](https://wiki.python.org/moin/TkInter).
 
@@ -54,11 +56,11 @@ deactivate
 Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `source` to the `activate` and `deactivate` commands above). Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/), but I don't absolve myself from helping, so you can always *contact me*.
 
 # Command-line Options
-Great you've got it installed\! Hopefully that is, we're about to find out\! The first step to running the software is navigating to the directory where the three scripts live. On Windows that looks for me like:
+Great you've got it installed\! Hopefully that is, we're about to find out\! The first step to running the software is navigating to the directory where the three scripts live. On Windows that might look like:
 ```
-cd C:\Users\BenPurinton\Dropbox\PebbleCounts\software
+cd C:\Users\YourName\PebbleCounts
 ```
-Just replace everything after `cd` with the path on your computer.
+Just replace everything after `cd` with the path on your computer to the downloaded `PebbleCounts` folder.
 
 ## Calculate Camera Resolution
 First off, if the imagery you intend to use is not orthorectified and georeferenced you'll want to calculate the approximate ground resolution of the photos in millimeters per pixel. To do so you can run the script `calculate_camera_resolution.py` at the command line.
@@ -95,7 +97,7 @@ average resolution in mm/pixel = 0.1732
 ```
 And I could then pass this resolution (`0.1732`) to the `PebbleCounts.py` script.
 
-**Note on Shot Height:** If you aren't sure exactly what height the image was shot from, use an approximate value. Even for differences of up to 1 m in shot height the ground resolution for most cameras will change by less than 0.2 mm, and thus have a neglible effect on the resulting grain-sizes measured.
+**Note on Shot Height:** If you aren't sure exactly what height the image was shot from, use an approximate value. Even for differences of up to 1 m in shot height the ground resolution for most cameras will change by less than 0.2 mm, and thus have a negligible effect on the resulting grain-sizes measured.
 
 ## PebbleCounts
 The code can be run from the command line with

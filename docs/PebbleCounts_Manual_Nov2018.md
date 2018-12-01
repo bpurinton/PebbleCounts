@@ -28,7 +28,7 @@ The first step is downloading the GitHub repository somewhere on your computer. 
 For those familiar with Python, the best way to install PebbleCounts is by simply downloading the GitHub repository, navigating to the PebbleCounts folder at the command line, ensuring all Python dependencies are installed (see the `environment.yml` file) and getting started by skipping ahead to **Command-line Options**:
 
 ## For Newbies 
-For newcomers to Python, no worries! Installation should be a cinch on most machines and I'll describe it here for Windows. First of all you`ll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). 
+For newcomers to Python, no worries! Installation should be a cinch on most machines and I'll describe it here for Windows. First of all you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). 
 
 Download either the 32- or 64-bit installer of Python 3.x then follow the installation instructions. It's recommend to add Miniconda to the system `PATH` variable when prompted. PebbleCounts has a number of important dependencies including [gdal](https://www.gdal.org/) for geo-referenced raster manipulation, [openCV](https://opencv.org/) for image manipulation and GUI operation, [scikit-image](https://scikit-image.org/) for filtering and measuring, [scikit-learn](https://scikit-learn.org/stable/) for k-means segmentation, along with a number of standard Python libraries including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [matplotlib](https://matplotlib.org/), and [tkinter](https://wiki.python.org/moin/TkInter).
 
@@ -54,11 +54,11 @@ deactivate
 Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `source` to the `activate` and `deactivate` commands above). Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/), but I don't absolve myself from helping, so you can always *contact me*.
 
 # Command-line Options
-Great you've got it installed\! Hopefully that is, we're about to find out\! The first step to running the software is navigating to the directory where the three scripts live. On Windows that looks for me like:
+Great you've got it installed\! Hopefully that is, we're about to find out\! The first step to running the software is navigating to the directory where the three scripts live. On Windows that might look like:
 ```
-cd C:\Users\BenPurinton\Dropbox\PebbleCounts\software
+cd C:\Users\YourName\PebbleCounts
 ```
-Just replace everything after `cd` with the path on your computer.
+Just replace everything after `cd` with the path on your computer to the downloaded `PebbleCounts` folder.
 
 ## Calculate Camera Resolution
 First off, if the imagery you intend to use is not orthorectified and georeferenced you'll want to calculate the approximate ground resolution of the photos in millimeters per pixel. To do so you can run the script `calculate_camera_resolution.py` at the command line.
@@ -95,7 +95,7 @@ average resolution in mm/pixel = 0.1732
 ```
 And I could then pass this resolution (`0.1732`) to the `PebbleCounts.py` script.
 
-**Note on Shot Height:** If you aren't sure exactly what height the image was shot from, use an approximate value. Even for differences of up to 1 m in shot height the ground resolution for most cameras will change by less than 0.2 mm, and thus have a neglible effect on the resulting grain-sizes measured.
+**Note on Shot Height:** If you aren't sure exactly what height the image was shot from, use an approximate value. Even for differences of up to 1 m in shot height the ground resolution for most cameras will change by less than 0.2 mm, and thus have a negligible effect on the resulting grain-sizes measured.
 
 ## PebbleCounts
 The code can be run from the command line with
@@ -192,13 +192,13 @@ Now you're ready to run an image. Because PebbleCounts doesn't allow you to save
     * Ortho:
         Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/):
         ```
-        python PebbleCounts.py -im C:\Users\BenPurinton\Dropbox\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif -ortho y -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 100 10 2 -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
+        python PebbleCounts.py -im C:\Users\YourName\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif -ortho y -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 100 10 2 -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
         ```
         I've written out the full command here, including all options, even though I'm using all the default values for this ~1 mm/pixel ortho image.
     * Non-ortho Imagery
         Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**:
         ```
-        python PebbleCounts.py -im C:\Users\BenPurinton\Dropbox\PebbleCounts\software\example_data\nonortho_resolution_0.63mmPerPixel.jpg -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 200 20 4 -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
+        python PebbleCounts.py -im C:\Users\YourName\PebbleCounts\software\example_data\nonortho_resolution_0.63mmPerPixel.jpg -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 200 20 4 -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
         ```
         **Note:** I've changed some of the default values for `-min_sz_factors` (doubled the default), since the resolution of this imagery is sub-mm.
 
