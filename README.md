@@ -82,7 +82,7 @@ optional arguments:
                         The height and width of the photography in pixels
 ```
 
-### Example Use
+#### Example Use
 Let's say I have a photo that I took from a height of 1.5 meters at a camera focal length of 35 mm. The camera has a [sensor size](https://en.wikipedia.org/wiki/Image_sensor_format) of 15 by 26 mm and was shot at 24 MP resolution, providing a 4000 pixel high by 6000 pixel wide picture. My command would look like this:
 ```
 python calculate_camera_resolution.py -focal 35 -height 1.5 -sensorHW 15 26 -imageHW 4000 6000
