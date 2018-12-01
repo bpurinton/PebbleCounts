@@ -189,13 +189,13 @@ Now you're ready to run an image. Because PebbleCounts doesn't allow you to save
 
 ## Step-by-step
 1. Depending on whether you're going to use an ortho or non-ortho image run one of the following commands:
-    *Ortho:
+    * Ortho:
         Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/):
         ```
         python PebbleCounts.py -im C:\Users\BenPurinton\Dropbox\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif -ortho y -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 100 10 2 -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
         ```
         I've written out the full command here, including all options, even though I'm using all the default values for this ~1 mm/pixel ortho image.
-    *Non-ortho Imagery
+    * Non-ortho Imagery
         Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**:
         ```
         python PebbleCounts.py -im C:\Users\BenPurinton\Dropbox\PebbleCounts\software\example_data\nonortho_resolution_0.63mmPerPixel.jpg -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 200 20 4 -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
@@ -259,9 +259,9 @@ As shown in (Figure \ref{Fig:example_clicking}), PebbleCounts does not provide a
 
 ## Ouput
 PebbleCounts saves out a few outputs in the same folder that the image resides:
-    *csv: filename_PebbleCounts_CSV.csv
-    *label image (geo-referenced if ortho image): filename_PebbleCounts_LABELS.tif
-    *figure showing the fit ellipses and potential rock type: filename_PebbleCounts_FIGURE.png
+    * csv: filename_PebbleCounts_CSV.csv
+    * label image (geo-referenced if ortho image): filename_PebbleCounts_LABELS.tif
+    * figure showing the fit ellipses and potential rock type: filename_PebbleCounts_FIGURE.png
 
 The results .csv has a line for each grain showing the fraction of the scene not measured (combined background shadow, color masked area, and unmeasured grains) the fraction of the scene that was selected by the color mask as background color (sand perhaps) and each grains' characteristics including a- and b-axis of the fit ellipse in pixels and in meters, the area covered by the grain mask in pixels and square meters, the orientation of the fit ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in cartesian coordinates:
 ```
