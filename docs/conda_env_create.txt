@@ -1,1 +1,0 @@
-conda create --name pebblecounts python=3.6 opencv scikit-image scikit-learn numpy gdal scipy matplotlib tk
