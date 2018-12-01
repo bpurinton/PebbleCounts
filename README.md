@@ -19,6 +19,9 @@ At each window the algorithm filters the image, detects edges, and employs [k-me
 
 ![Flow chart of PebbleCounts. The boxes are user supplied input or output from the algorithm. Dashed lines indicate a user input step during processing, either entering and checking values or clicking.\label{Fig:pebblecounts_flowchart}](docs/figs/pebblecounts_flowchart.png) <!-- .element height="50%" width="50%" -->
 
+
+<img src="docs/figs/pebblecounts_flowchart.png" width="48">
+
 # Installation
 The first step is downloading the GitHub repository somewhere on your computer. The folder should contain:
 1. Three Python scripts: PebbleCounts.py, PCfunctions.py, calculate_camera_resolution.py
