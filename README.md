@@ -11,8 +11,10 @@ Happy clicking!
 
 [FULL MANUAL INCLUDING INSTALL AND RUNNING](docs/PebbleCounts_Manual_Nov2018.md)
 
+![](docs/figs/example_clicking.png)
+
 ## Disclaimer
-PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have problems installing or running the software *please* contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
+PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have problems installing or running the software contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
 
 # Overview
 To briefly summarize, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively masks shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum grain size provided by the user. This multi-scale approach allows the algorithm to "burrow" through the grain size distribution beginning by removing the largest grains and ending on the smallest, with the medium sizes in between.
