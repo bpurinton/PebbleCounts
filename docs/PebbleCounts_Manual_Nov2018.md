@@ -239,10 +239,6 @@ Otsu thresholding of the image with an entered value 0-100. Press *r* to flash t
 Color masking clicking window. Click on a color you want to mask to open a second window and check it. Press *q* to close window or *r* to flash the original image.
 
 
-![](figs/pc_03_colormask_02.png)
-Color masking result window. Press *y* to accept or *n* to try a different click in the previous window.
-
-
 5. After these couple interactive steps, PebbleCounts will take over the automated windowing, filtering, edge detection, and k-means segmentation at each window. The command prompt should look something like this:
     ```
     Beginning k-means segmentation
