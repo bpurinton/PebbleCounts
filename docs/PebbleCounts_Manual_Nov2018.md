@@ -197,20 +197,21 @@ Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipe
         Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/):
 ```
 python PebbleCounts.py -im C:\Users\YourName\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif \
-                        -ortho y -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 100 10 2 \
-                        -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
-                        -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 \
-                        -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
+                -ortho y -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 100 10 2 \
+                -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
+                -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 \
+                -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
 ```
+
         I've written out the full command here, including all options, even though I'm using all the default values for this ~1 mm/pixel ortho image.
     * Non-ortho Imagery
         Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**:
 ```
 python PebbleCounts.py -im C:\Users\YourName\PebbleCounts\software\example_data\nonortho_resolution_0.63mmPerPixel.jpg \
-                        -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 200 20 4 \
-                        -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
-                        -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 \
-                        -sobel_th 90 -canny_sig 2 -resize 0.8
+                -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 200 20 4 \
+                -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
+                -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 \
+                -sobel_th 90 -canny_sig 2 -resize 0.8
 ```
         **Note:** I've changed some of the default values for `-min_sz_factors` (doubled the default), since the resolution of this imagery is sub-mm.
 
