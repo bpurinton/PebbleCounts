@@ -234,9 +234,11 @@ Otsu thresholding of the image with an entered value 0-100. Press *r* to flash t
 
 4. Is there a color you want to mask out in the scene? Maybe the sand is a uniform color distinct from the pebbles. If so, then in the next step enter `y`, which will bring up another pop-up window. With the window active, you can press *q* to close it if you decide not to color mask and *r* to flash the original image. Once you click a point in the window with a color you'd like to mask a second pop-up will open displaying the result of applying a mask to this color. Press *y* to accept the mask or *n* to close it and try another click in the first window. Pressing *y* here will return you to the command prompt where you can finish color masking by entering `n` or adding additional color masks by entering `y`.
 
-
-![](figs/pc_03_colormask_01.png)
+![](figs/pc_03_colormask01.png)
 Color masking clicking window. Click on a color you want to mask to open a second window and check it. Press *q* to close window or *r* to flash the original image.
+
+![](figs/pc_03_colormask02.png)
+Color masking result window. Press *y* to accept or *n* to try a different click in the previous window.
 
 
 5. After these couple interactive steps, PebbleCounts will take over the automated windowing, filtering, edge detection, and k-means segmentation at each window. The command prompt should look something like this:
