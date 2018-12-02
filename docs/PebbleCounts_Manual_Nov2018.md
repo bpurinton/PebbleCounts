@@ -195,6 +195,7 @@ Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipe
 1. Depending on whether you're going to use an ortho or non-ortho image run one of the following commands:
 * **Ortho:**
 Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/):
+
 ```
 python PebbleCounts.py -im C:\Users\YourName\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif \
                 -ortho y -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 100 10 2 \
@@ -207,6 +208,7 @@ I've written out the full command here, including all options, even though I'm u
 
 * **Non-ortho Imagery:**
 Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**:
+
 ```
 python PebbleCounts.py -im C:\Users\YourName\PebbleCounts\software\example_data\nonortho_resolution_0.63mmPerPixel.jpg \
                 -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 200 20 4 \
