@@ -3,7 +3,12 @@
 # buildOpenCV.zsh -                                                           #
 #                                                                             #
 # Script to build OpenCV 3.4.2 from source into an Anaconda virtual           #
-# environment on a Linux Mint 19 machine.                                     #
+# environment				                                      #
+###############################################################################
+
+###############################################################################
+# SOURCE: https://gist.github.com/clamytoe/3424d0201bba0073ff1313e80ffc6328   #
+# Modified by Ben Purinton, December 2018				      #
 ###############################################################################
 
 # Install requirements
@@ -25,17 +30,17 @@ unzip opencv.zip
 unzip opencv_contrib.zip
 
 # Create virtual environment
-conda create -y --name cv numpy
-conda activate cv
+conda create -y --name pebblecounts numpy
+conda activate pebblecounts
 
 # Generate make files and install
 cd opencv-3.4.2
 mkdir build
 cd build
-cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=~/miniconda3/envs/cv -D INSTALL_PYTHON_EXAMPLES=ON -D INSTALL_C_EXAMPLES=OFF -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-3.4.2/modules -D PYTHON_EXECUTABLE=~/miniconda3/envs/cv/bin/python -D WITH_GTK=ON -D WITH_OPENGL=ON -D WITH_QT=ON -D WITH_TBB=ON -D WITH_V4L=ON -D BUILD_EXAMPLES=ON ..
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=~/miniconda3/envs/pebblecounts -D INSTALL_PYTHON_EXAMPLES=ON -D INSTALL_C_EXAMPLES=OFF -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-3.4.2/modules -D PYTHON_EXECUTABLE=~/miniconda3/envs/pebblecounts/bin/python -D WITH_GTK=ON -D WITH_OPENGL=ON -D WITH_QT=ON -D WITH_TBB=ON -D WITH_V4L=ON -D BUILD_EXAMPLES=ON ..
 make
 make install
-ldconfig -n ~/miniconda3/envs/cv/lib
+ldconfig -n ~/miniconda3/envs/pebblecounts/lib
 
 # Verify that it worked
 python -c "import cv2; print(cv2.__version__)"
