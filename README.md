@@ -29,7 +29,7 @@ At each window the algorithm filters the image, detects edges, and employs [k-me
 # Installation
 The first step is downloading the GitHub repository somewhere on your computer. The folder should contain:
 1. Three Python scripts: `PebbleCounts.py`, `PCfunctions.py`, `calculate_camera_resolution.py`
-2. An `environment.yml` file containing the Python dependencies
+2. An `environment.yml` file containing the Python dependencies and a `install_openCV_env_ubuntu18.sh` shell script for creating an openCV environment with conda on Ubuntu
 3. A folder `example_data` with two example images one orthorectified and the other raw
 4. A folder `docs` containing the [full manual](docs/PebbleCounts_Manual_Nov2018.md)
 
@@ -60,7 +60,7 @@ deactivate
 ```
 
 ## For Mac and Linux Users
-Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `source` to the `activate` and `deactivate` commands above). Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/), but I don't absolve myself from helping, so you can always [contact me](purinton@uni-potsdam.de).
+Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `source` to the `activate` and `deactivate` commands above). Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/). The shell script `install_openCV_env_ubuntu18.sh` should allow for a clean install of an openCV inclusive `pebblecounts` conda environment on an Ubuntu v.18 system.
 
 # Command-line Options
 Great you've got it installed! Hopefully that is, we're about to find out! Let's navigate to the directory where the three scripts live. Open a command prompt (open `cmd` for Windows or open a `terminal` for Linux/Mac) and `cd` to `PebbleCounts` directory. On Windows that is:
