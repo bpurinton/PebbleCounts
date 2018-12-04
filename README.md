@@ -61,7 +61,7 @@ Briefly, PebbleCounts pre-processes the image by allowing the user to subset the
 At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the [full manual](docs/PebbleCounts_Manual_Nov2018.md) for the step-by-step guide). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
 
 ### Flowchart for PebbleCounts
-<img src="docs/figs/pebblecounts_flowchart.png" width="500">
+<img src="docs/figs/pebblecounts_flowchart.png" width="400">
 
 
 # Command-line Options
