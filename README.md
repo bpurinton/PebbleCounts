@@ -18,14 +18,6 @@ Happy clicking!
 ## Disclaimer
 PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have any problems contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
 
-# Overview
-Briefly, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively masks shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum grain size provided by the user.
-
-At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the [full manual](docs/PebbleCounts_Manual_Nov2018.md) for the step-by-step guide). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
-
-### Flowchart for PebbleCounts
-<img src="docs/figs/pebblecounts_flowchart.png" width="500">
-
 # Installation
 The first step is downloading the GitHub repository somewhere on your computer. The folder should contain:
 1. Three Python scripts: `PebbleCounts.py`, `PCfunctions.py`, `calculate_camera_resolution.py`
@@ -61,6 +53,16 @@ deactivate
 
 ## For Mac and Linux Users
 Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `source` to the `activate` and `deactivate` commands above). Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/). The shell script `install_openCV_env_ubuntu18.sh` should allow for a clean install of an openCV inclusive `pebblecounts` conda environment on an Ubuntu v.18 system.
+
+
+# Overview
+Briefly, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively masks shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum grain size provided by the user.
+
+At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the [full manual](docs/PebbleCounts_Manual_Nov2018.md) for the step-by-step guide). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
+
+### Flowchart for PebbleCounts
+<img src="docs/figs/pebblecounts_flowchart.png" width="500">
+
 
 # Command-line Options
 Great you've got it installed! Hopefully that is, we're about to find out! Let's navigate to the directory where the three scripts live. Open a command prompt (open `cmd` for Windows or open a `terminal` for Linux/Mac) and `cd` to `PebbleCounts` directory. On Windows that is:
