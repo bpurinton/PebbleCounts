@@ -5,7 +5,11 @@ author: "Ben Purinton ([purinton@uni-potsdam.de](purinton@uni-potsdam.de))"
 ---
 
 # Introduction
-This guide will briefly walk you through the installation and running of PebbleCounts at the command line. PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. It is a semi-automated  program in that edge detection and k-means segmentation are performed automatically, but the user must interactively hand-click the well outlined pebbles and ignore the bad results. The software is extremely useful for area-by-number pebble counts without painstaking field work or the disruption of the natural environment via gravel removal. If you really want some deeper background on the problem of grain size measurement from imagery and the testing of PebbleCounts, check out the publication accompanying the algorithm: PUBLICATION DOI. And cite it if you use the results in your own work.
+This guide will briefly walk you through the installation and running of PebbleCounts at the command line. PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. It is a semi-automated  program in that edge detection and k-means segmentation are performed automatically, but the user must interactively hand-click the well outlined pebbles and ignore the bad results. The software is extremely useful for area-by-number pebble counts without painstaking field work or the disruption of the natural environment via gravel removal. If you really want some deeper background on the problem of grain size measurement from imagery and the testing of PebbleCounts, check out the publication accompanying the algorithm:
+
+**PUBLICATION DOI.** 
+
+and cite it if you use the results in your own work.
 
 Happy clicking!
 
@@ -262,33 +266,33 @@ Color masking result window. Press *y* to accept or *n* to try a different click
 
 
 5. After these couple interactive steps, PebbleCounts will take over the automated windowing, filtering, edge detection, and k-means segmentation at each window. The command prompt should look something like this:
-    ```
-    Beginning k-means segmentation
+```
+Beginning k-means segmentation
 
-    Scale 1 of 3
+Scale 1 of 3
 
-    Window 1 of 1
+Window 1 of 1
 
-    Non-local means filtering
-    Bilateral filtering
-    Black tophat edge detection
-    Canny edge detection
-    Sobel edge detection
-    Running k-means
-    Current number of clusters: 2, total inertia: 59896.391
-    Current number of clusters: 3, total inertia: 48804.694
-    Current number of clusters: 4, total inertia: 39567.055
-    Current number of clusters: 5, total inertia: 34193.667
-    Current number of clusters: 6, total inertia: 29956.034
-    Current number of clusters: 7, total inertia: 25652.019
-    Current number of clusters: 8, total inertia: 23202.660
-    Current number of clusters: 9, total inertia: 22270.410
-    Current number of clusters: 10, total inertia: 21233.908
-    Current number of clusters: 11, total inertia: 19145.581
-    Current number of clusters: 12, total inertia: 18094.143
-    Current number of clusters: 13, total inertia: 18043.373
-    Cleaning up k-means mask
-    ```
+Non-local means filtering
+Bilateral filtering
+Black tophat edge detection
+Canny edge detection
+Sobel edge detection
+Running k-means
+Current number of clusters: 2, total inertia: 59896.391
+Current number of clusters: 3, total inertia: 48804.694
+Current number of clusters: 4, total inertia: 39567.055
+Current number of clusters: 5, total inertia: 34193.667
+Current number of clusters: 6, total inertia: 29956.034
+Current number of clusters: 7, total inertia: 25652.019
+Current number of clusters: 8, total inertia: 23202.660
+Current number of clusters: 9, total inertia: 22270.410
+Current number of clusters: 10, total inertia: 21233.908
+Current number of clusters: 11, total inertia: 19145.581
+Current number of clusters: 12, total inertia: 18094.143
+Current number of clusters: 13, total inertia: 18043.373
+Cleaning up k-means mask
+```
 
 
 6. After the mask is cleaned a new window will open where you need to click the good looking grains and ignore the bad ones. Left clicking anywhere on the image will produce a black circle at that point, meaning that you've selected all the pixels in this connected region as one grain. A right click anywhere on the image will remove the last click and exchange the black circle for a red one, indicating this area will not be considered (unless of course you add another left click to the region). Overlay the original image to help decide what is and is not a well delineated grain by pressing *r* once to open the image and *r* again to close the image and return to the mask. Once you are satisfied with your clicks press *q* to close the window and automatically move on to the next window and/or scale. The clicked grains will be automatically measured and added to the final output.
