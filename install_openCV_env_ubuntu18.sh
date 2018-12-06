@@ -1,15 +1,8 @@
-#!/usr/bin/zsh
-###############################################################################
-# buildOpenCV.zsh -                                                           #
-#                                                                             #
-# Script to build OpenCV 3.4.2 from source into an Anaconda virtual           #
-# environment				                                      #
-###############################################################################
+#!/usr/bin/bash
+# Script to build OpenCV 3.4.2 from source into an Anaconda environment
+# SOURCE: https://gist.github.com/clamytoe/3424d0201bba0073ff1313e80ffc6328   
+# Modified by Ben Purinton, December 2018				      
 
-###############################################################################
-# SOURCE: https://gist.github.com/clamytoe/3424d0201bba0073ff1313e80ffc6328   #
-# Modified by Ben Purinton, December 2018				      #
-###############################################################################
 
 # Install requirements
 sudo apt-get update
