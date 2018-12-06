@@ -228,7 +228,7 @@ Be sure to set the `-ortho` flag to `y` and the resolution will be automatically
 
 ```
 python PebbleCounts.py -im \
-  C:\Users\YourName\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif \
+  C:\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif \
   -ortho y -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 100 10 2 \
   -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
   -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 \
@@ -240,7 +240,7 @@ Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution`
 
 ```
 python PebbleCounts.py -im \
-  C:\Users\YourName\PebbleCounts\example_data\nonortho_resolution_0.63mmPerPixel.jpg \
+  C:\PebbleCounts\example_data\nonortho_resolution_0.63mmPerPixel.jpg \
   -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 200 20 4 \
   -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
   -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 \
