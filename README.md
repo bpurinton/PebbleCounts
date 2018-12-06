@@ -11,7 +11,7 @@ PebbleCounts is a Python based application for the identification and sizing of 
 
 Happy clicking!
 
-[FULL MANUAL INCLUDING INSTALL AND RUNNING](docs/PebbleCounts_Manual_Nov2018.md)
+[FULL MANUAL INCLUDING INSTALL AND RUNNING](docs/PebbleCounts_Manual.pdf)
 
 ![](docs/figs/example_clicking_fix.png)
 
@@ -23,7 +23,7 @@ The first step is downloading the GitHub repository somewhere on your computer. 
 1. Three Python scripts: `PebbleCounts.py`, `PCfunctions.py`, `calculate_camera_resolution.py`
 2. An `environment.yml` file containing the Python dependencies and a `install_openCV_env_ubuntu18.sh` shell script for creating an openCV environment with conda on Ubuntu
 3. A folder `example_data` with two example images one orthorectified and the other raw
-4. A folder `docs` containing the [full manual](docs/PebbleCounts_Manual_Nov2018.md)
+4. A folder `docs` containing the [full manual](docs/PebbleCounts_Manual.pdf)
 
 ## For the Pros
 For those familiar with Python, the best way to install PebbleCounts is by simply downloading the GitHub repository, navigating to the PebbleCounts folder at the command line, ensuring all Python dependencies are installed (see the `environment.yml` file) and getting started by skipping ahead to **Command-line Options**.
@@ -58,7 +58,7 @@ Those using Mac OS or Linux shouldn't have much trouble modifying the above comm
 # Overview
 Briefly, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively masks shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum grain size provided by the user.
 
-At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the [full manual](docs/PebbleCounts_Manual_Nov2018.md) for the step-by-step guide). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
+At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the [full manual](docs/PebbleCounts_Manual.pdf) for the step-by-step guide). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
 
 ### Flowchart for PebbleCounts
 <img src="docs/figs/pebblecounts_flowchart.png" width="400">
@@ -199,4 +199,4 @@ Here's a bit more detail on some of the less obvious inputs to clarify:
 Georeferenced ortho-photos should be in a **UTM projection**, providing the scale in meters.
 
 # Running PebbleCounts
-Now you're ready to run an image. Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. For higher resolution (sub-mm) imagery it's recommended not to go above 1 by 1 meters. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. Head-over to the [full manual](docs/PebbleCounts_Manual_Nov2018.md) for a step-by-step guide to running PebbleCounts for a given image
+Now you're ready to run an image. Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. For higher resolution (sub-mm) imagery it's recommended not to go above 1 by 1 meters. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. Head-over to the [full manual](docs/PebbleCounts_Manual.pdf) for a step-by-step guide to running PebbleCounts for a given image

@@ -6,6 +6,6 @@ sudo apt install pandoc texlive-latex-recommended texlive-xetex texlive-luatex p
 d=$(date +%Y-%m-%d)
 pandoc --number-sections --listings -H auto_linebreak_listings.tex \
     --variable papersize=a4paper --variable urlcolor=cyan \
-    -s PebbleCounts_Manual_Nov2018.md -o PebbleCounts_Manual_Nov2018${d}.pdf
+    -s PebbleCounts_Manual_Nov2018_md_to_pdf.md -o PebbleCounts_Manual_Nov2018_md_to_pdf_${d}.pdf
 
-cp PebbleCounts_Manual_Nov2018${d}.pdf PebbleCounts_Manual_Nov2018.pdf
+cp PebbleCounts_Manual_Nov2018_md_to_pdf_${d}.pdf PebbleCounts_Manual.pdf
