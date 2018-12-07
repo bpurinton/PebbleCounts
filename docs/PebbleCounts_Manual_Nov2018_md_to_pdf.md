@@ -165,7 +165,7 @@ optional arguments:
   -maxGS MAXGS          Maximum expected longest axis grain size in meters.
                         DEFAULT=0.3
   -cutoff CUTOFF        Cutoff factor in pixels for inclusion of pebble in
-                        final count. DEFAULT=10
+                        final count. DEFAULT=9
   -min_sz_factors MIN_SZ_FACTORS [MIN_SZ_FACTORS ...]
                         Factors to multiply cutoff value by at each scale.
                         Used to clean-up the masks for easier clicking. The
@@ -209,7 +209,7 @@ Here's a bit more detail on some of the less obvious inputs to clarify:
 * `-resize` controls the pop-up window size for the GUI. If you notice the window is too small to see the grains then use a high value like 0.9, but if the image is partially off-screen you should try lowering the value to around 0.8.
 * `-lithologies` is the expected number of different rock types in the image with distinct coloration differences. It defaults to 1, meaning the lithology is uniform or the color differences between lithologies are minimal and therefore difficult to discern from the image alone.
 * `-maxGS` is the expected size in meters of the largest rock in the image based on some field knowledge. This value is used during the windowing to set the appropriate sizes at the three scales in conjunction with the `-win_sz_factors` input.
-* `-cutoff` is the algorithm's lower limit on b-axis measurement given in pixels. The default value of 10 is what we found to be reliable for accurate distribution measurement using PebbleCounts. This value is also used by the `-min_sz_factors` input to cleanup the mask at each of the three window scales and should also be scaled depending on the imagery resolution (sub-mm, mm, cm).
+* `-cutoff` is the algorithm's lower limit on b-axis measurement given in pixels. The default value of 9 is what we found to be reliable for accurate distribution measurement using PebbleCounts. This value is also used by the `-min_sz_factors` input to cleanup the mask at each of the three window scales and should also be scaled depending on the imagery resolution (sub-mm, mm, cm).
 * `-improvement_ths` is the fractional percentage (from 0-1) that k-means uses to assess convergence and stopping. The default values are probably good here.
 * `-coordinate_scales` is the fractional percentage (from 0-1) to scale the x,y coordinates of each pixel compared with the color information in the k-means segmentation. Since we want to allow for anisotropic grains covering large areas if they have semi-uniform color, we want to scale the relative importance of pixel location by approximately 50% of the color, hence the default values of 0.5 at each scale.
 * `-nl_means_chroma_filts` is the level of chromaticity filtering to apply during [non-local means denoising](https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html), which should be reduced at each scale. Higher values lead to more smoothing of the image and a cartoonish appearance. The default values should again be good here.
@@ -229,7 +229,7 @@ Be sure to set the `-ortho` flag to `y` and the resolution will be automatically
 ```
 python PebbleCounts.py -im \
   C:\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif \
-  -ortho y -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 100 10 2 \
+  -ortho y -lithologies 1 -maxGS 0.2 -cutoff 9 -min_sz_factors 100 10 2 \
   -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
   -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 \
   -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
@@ -241,7 +241,7 @@ Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution`
 ```
 python PebbleCounts.py -im \
   C:\PebbleCounts\example_data\nonortho_resolution_0.63mmPerPixel.jpg \
-  -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 10 -min_sz_factors 200 20 4 \
+  -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 9 -min_sz_factors 200 20 4 \
   -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
   -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 \
   -sobel_th 90 -canny_sig 2 -resize 0.8

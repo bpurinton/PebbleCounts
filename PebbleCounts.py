@@ -42,7 +42,7 @@ parser.add_argument("-lithologies", type=int,
 parser.add_argument("-maxGS", type=float, 
                     help="Maximum expected longest axis grain size in meters. DEFAULT=0.3", default=0.3)
 parser.add_argument("-cutoff", type=int, 
-                    help="Cutoff factor in pixels for inclusion of pebble in final count. DEFAULT=10", default=10)
+                    help="Cutoff factor in pixels for inclusion of pebble in final count. DEFAULT=9", default=9)
 parser.add_argument("-min_sz_factors", nargs='+', type=float, 
                     help="Factors to multiply cutoff value by at each scale. Used to clean-up the masks for easier clicking. The default values are good for ~1 mm/pixel imagery but should be doubled for sub-millimeter or halved for centimeter resolution imagery. DEFAULT=[100, 10, 2]", default=[100, 10, 2])
 parser.add_argument("-win_sz_factors", nargs='+', type=float, 
