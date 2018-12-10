@@ -1,7 +1,14 @@
 ---
-title: "Installing and Running PebbleCounts"
-date: "November 2018"
+title: "*Installing and Running PebbleCounts*"
+subtitle: "Grain-sizing algorithm for gravel-bed river imagery"
+subject: "Geomorphology"
+date: "December 2018"
 author: "Ben Purinton ([purinton@uni-potsdam.de](purinton@uni-potsdam.de))"
+keywords: [grain size, rivers, geomorphology]
+titlepage: true
+titlepage-rule-height: 2
+toc-own-page: true 
+listings-disable-line-numbers: true
 ---
 
 # Introduction
