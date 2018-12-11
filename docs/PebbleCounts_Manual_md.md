@@ -10,7 +10,7 @@ titlepage-rule-height: 2
 toc-own-page: true 
 listings-disable-line-numbers: true
 logo: "figs/logo.png"
-logo-width: 360
+logo-width: 1000
 ---
 
 # Introduction
