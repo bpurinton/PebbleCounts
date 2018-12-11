@@ -13,7 +13,7 @@ Happy clicking!
 
 [FULL MANUAL INCLUDING INSTALL AND RUNNING](docs/PebbleCounts_Manual.pdf)
 
-![](docs/figs/example_clicking_fix.png)
+![](docs/figs/logo.png)
 
 ## Disclaimer
 PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have any problems contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
