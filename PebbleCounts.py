@@ -229,14 +229,16 @@ while True:
         break
     else:
         print("incorrect input, should be 'y' or 'n'")
+color_masks = []
+shadow_mask = np.invert(ignore_mask.copy().astype(np.uint8))
 while do_masking == 'y':    
     # instantiate coordinate class for storing the clicks
     coords = func.pick_colors()
     # also create a copy of the current shadow mask to pass to the function
-    shadow_mask = np.invert(ignore_mask.copy().astype(np.uint8))
-    shadow_mask[shadow_mask==254] = 0    
-    shadow_mask = np.dstack((shadow_mask, shadow_mask, shadow_mask))
-    img = cv2.addWeighted(shadow_mask, 0.6, img, 1, 0)
+    current_mask = np.invert(ignore_mask.copy().astype(np.uint8))
+    current_mask[current_mask==254] = 0    
+    current_mask = np.dstack((current_mask, current_mask, current_mask))
+    img = cv2.addWeighted(current_mask, 0.6, img, 1, 0)
     # create a window and set the callback function
     win_name = "Color Selector ('q' to close, 'r' to flash image)"
     cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
@@ -270,18 +272,17 @@ while do_masking == 'y':
         color_mask = cv2.inRange(hsv, lower, upper)
         color_mask = np.invert(color_mask).astype(bool)
         # clean it up
-        color_mask = morph.remove_small_holes(color_mask, area_threshold=10, connectivity=2)
+        color_mask = morph.remove_small_holes(color_mask, area_threshold=cutoff, connectivity=2)
         color_mask = morph.opening(color_mask, selem=morph.selem.disk(1))
         color_mask = morph.closing(color_mask, selem=morph.selem.disk(1))
         # add the hue mask to the full ignore mask
         ignore_mask = np.logical_and(ignore_mask, color_mask)
-        # the "color mask" represents percentage of pixels that are sand
-        perc_sand = np.sum(np.invert(color_mask.astype(bool)))/color_mask.size
         # make the color mask three channel image for stacking
         color_mask = color_mask.astype(np.uint8)
         color_mask[color_mask==0] = 255
         color_mask[color_mask==1] = 0
         color_mask = np.dstack((color_mask, color_mask, color_mask))
+        color_masks.append(color_mask)
         # stack the color mask for subsequent runs
         img = cv2.addWeighted(color_mask, 0.6, img, 1, 0)
         # do we repeat the color masking?
@@ -298,6 +299,15 @@ while do_masking == 'y':
                 break
             else:
                 print("incorrect input, should be 'y' or 'n'")
+    
+# combine the color masks if any were applied and get percentage sand
+if len(color_masks) != 0:
+    color_mask = np.zeros(color_masks[0].shape[0:2]).astype(bool)
+    for m in color_masks:
+        m = m[:,:,0].astype(bool)
+        color_mask = np.logical_or(color_mask, m)
+    # the "color mask" represents percentage of pixels that are sand
+    perc_sand = np.sum(color_mask)/color_mask.size
 
 # instantiate the empty grains to fill with all the region props below
 grains = []
@@ -589,7 +599,9 @@ plt.savefig(fig_out, dpi=300)
 plt.close()
 
 # what is the percent of the image not measured (fines or unfound rocks)
-perc_nongrain = np.sum(np.invert(ignore_mask.astype(bool)))/ignore_mask.size
+perc_nongrain = np.sum(ignore_mask)/ignore_mask.size
+# subtract the percent sand from this
+perc_nongrain -= perc_sand
 # output the measured grains as a csv
 with open(csv_out, "w") as csv_file:
     writer=csv.writer(csv_file, delimiter=",",lineterminator="\n",)
