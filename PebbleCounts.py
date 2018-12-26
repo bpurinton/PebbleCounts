@@ -470,7 +470,24 @@ for index in range(len(windowSizes)):
             # add to master mask
             master_mask = master_mask + mask_color.astype(np.uint8)
         
-        # skip the master mask if it is empty after cleaning
+        # skip this mask if there are few remaining pixels
+        idx = np.where(master_mask != [0, 0, 0])
+        if len(idx[0]) == 0:
+            print("\nEmpty window, skipping\n")
+            continue
+      
+        # eliminate any regions that are smaller than cutoff value
+        tmp, num = ndi.label(master_mask[:,:,0])
+        for region in meas.regionprops(tmp, coordinates='xy'):
+            if region.minor_axis_length < float(cutoff) or region.major_axis_length < float(cutoff):
+                idxs = region.coords
+                idxs = [tuple(i) for i in idxs]
+                for idx in idxs:
+                    tmp[idx] = 0
+        idx = np.where(tmp == 0)
+        master_mask[idx] = [0, 0, 0]
+
+        # skip this mask if there are few remaining pixels
         idx = np.where(master_mask != [0, 0, 0])
         if len(idx[0]) == 0:
             print("\nEmpty window, skipping\n")
