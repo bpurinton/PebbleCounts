@@ -249,10 +249,10 @@ python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho 
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
   -input_resolution 0.63
 ```
-  * **Non-ortho Imagery With Modified Arguments:** (Increase number of expected lithologies and the maximum grain size (as above for ortho-imagery). Also, since the resolution of this image is sub-mm, I've doubled the default values for `-min_sz_factors`)
+  * **Non-ortho Imagery With Modified Arguments:** (Increase number of expected lithologies and decrease the maximum grain size. Also, since the resolution of this image is sub-mm, I've doubled the default values for `-min_sz_factors`)
 ```
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
-  -input_resolution 0.63  -lithologies 3 -maxGS 0.4 -min_sz_factors 200 20 4
+  -input_resolution 0.63  -lithologies 2 -maxGS 0.2 -min_sz_factors 200 20 4
 ```
 
 2. Interactively subset the image by typing `y` or don't by typing `n` (Figure \ref{Fig:pc_01_subsetting}). If you do subset, click and drag a box on the pop-up window and press the *spacebar* to close the window again.
