@@ -46,7 +46,7 @@ parser.add_argument("-cutoff", type=int,
 parser.add_argument("-min_sz_factors", nargs='+', type=float, 
                     help="Factors to multiply cutoff value by at each scale. Used to clean-up the masks for easier clicking. The default values are good for ~1 mm/pixel imagery but should be doubled for sub-millimeter or halved for centimeter resolution imagery. DEFAULT=[100, 10, 2]", default=[100, 10, 2])
 parser.add_argument("-win_sz_factors", nargs='+', type=float, 
-                    help="Factors to multiply maximum grain-size (in pixels) by at each scale. The default values are good for millimeter and sub-millimeter imagery, but should be doubled for coarser centimeter imagery. DEFAULT=[10, 2, 0.5]", default=[10, 2, 0.5])
+                    help="Factors to multiply maximum grain-size (in pixels) by at each scale. The default values are good for millimeter and sub-millimeter imagery, but should be doubled for coarser centimeter imagery. DEFAULT=[10, 2, 1]", default=[10, 2, 1])
 parser.add_argument("-improvement_ths", nargs='+', type=float, 
                     help="Improvement threshold values for each window scale that tells k-means when to halt. DEFAULT=[0.01, 0.1, 0.1]", default=[0.01, 0.1, 0.1])
 parser.add_argument("-coordinate_scales", nargs='+', type=float, 

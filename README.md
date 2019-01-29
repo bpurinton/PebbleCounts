@@ -156,7 +156,7 @@ optional arguments:
                         at each scale. The default values are good for
                         millimeter and sub-millimeter imagery, but should be
                         doubled for coarser centimeter imagery. DEFAULT=[10,
-                        2, 0.5]
+                        2, 1]
   -improvement_ths IMPROVEMENT_THS [IMPROVEMENT_THS ...]
                         Improvement threshold values for each window scale
                         that tells k-means when to halt. DEFAULT=[0.01, 0.1,
