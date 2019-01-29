@@ -234,12 +234,13 @@ Now you're ready to run an image. Because PebbleCounts doesn't allow you to save
 
 1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands:
 
+**Note:** While all of the default arguments can be modified at the command line, it is recommended to stick mostly to the default values. In most cases, only the expected lithologies and maximum expected grain-size need to be modified for different images.
+
   * **Ortho With Default Arguments:** Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/).
 ```
 python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y
 ```
-  * **Ortho With Modified Arguments:**
-    * Increase number of expected lithologies and the maximum grain-size:
+  * **Ortho With Modified Arguments:** Increase number of expected lithologies and the maximum grain size:
 ```
 python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y \
   -lithologies 3 -maxGS 0.4
@@ -250,11 +251,10 @@ python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho 
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho -n \
   -input_resolution 0.63
 ```
-  * **Non-ortho Imagery With Modified Arguments:**
-    * Increase number of expected lithologies: As above for ortho-imagery
+  * **Non-ortho Imagery With Modified Arguments:** Increase number of expected lithologies and the maximum grain size (as above for ortho-imagery). Also, since the resolution of this image is sub-mm, I've doubled the default values for `-min_sz_factors`:
 ```
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho -n \
-  -input_resolution 0.63  -lithologies 3
+  -input_resolution 0.63  -lithologies 3 -maxGS 0.4 -min_sz_factors 200 20 4
 ```
 
 2. Interactively subset the image by typing `y` or don't by typing `n` (Figure \ref{Fig:pc_01_subsetting}). If you do subset, click and drag a box on the pop-up window and press the *spacebar* to close the window again.
