@@ -231,29 +231,35 @@ Now you're ready to run an image. Because PebbleCounts doesn't allow you to save
 **Note on ortho-imagery:** Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject).
 
 ## Step-by-Step Example
-1. Depending on whether you're going to use an ortho or non-ortho image run one of the following commands:
-* **Ortho:**
-Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/) (**Note:** I've written out the full command here, including all options, even though I'm using all the default values for this ~1 mm/pixel ortho image.):
 
+1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands:
+
+* **Ortho With Default Arguments:** Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/).
 ```
-python PebbleCounts.py -im \
-  C:\PebbleCounts\example_data\ortho_resolution_1.2mmPerPix.tif \
-  -ortho y -lithologies 1 -maxGS 0.2 -cutoff 9 -min_sz_factors 100 10 2 \
-  -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
-  -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 \
-  -tophat_th 90 -sobel_th 90 -canny_sig 2 -resize 0.8
+python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y
+```
+* **Ortho With Modified Arguments:**
+  * Increase number of expected lithologies:
+```
+python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y \
+  -lithologies 3
+```
+  * Change the maximum expected grain-size:
+```
+python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y \
+  -lithologies 3 -maxGS 0.4
 ```
 
-* **Non-ortho Imagery:**
-Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution** (**Note:** I've changed some of the default values for `-min_sz_factors` (doubled the default), since the resolution of this imagery is sub-mm.):
-
+* **Non-ortho Imagery With Default Arguments:** Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**
 ```
-python PebbleCounts.py -im \
-  C:\PebbleCounts\example_data\nonortho_resolution_0.63mmPerPixel.jpg \
-  -ortho n -input_resolution 0.63 -lithologies 1 -maxGS 0.2 -cutoff 9 -min_sz_factors 200 20 4 \
-  -win_sz_factors 10 2 0.5 -improvement_ths 0.01 0.1 0.1 -coordinate_scales 0.5 0.5 0.5 \
-  -overlaps 0.5 0.3 0.1 -nl_means_chroma_filts 3 2 1 -bilat_filt_szs 9 5 3 -tophat_th 90 \
-  -sobel_th 90 -canny_sig 2 -resize 0.8
+python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho -n \
+  -input_resolution 0.63
+```
+* **Non-ortho Imagery With Modified Arguments:**
+  * Increase number of expected lithologies: As above for ortho-imagery
+```
+python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho -n \
+  -input_resolution 0.63  -lithologies 3
 ```
 
 2. Interactively subset the image by typing `y` or don't by typing `n` (Figure \ref{Fig:pc_01_subsetting}). If you do subset, click and drag a box on the pop-up window and press the *spacebar* to close the window again.
