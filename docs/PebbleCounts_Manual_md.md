@@ -236,22 +236,22 @@ Now you're ready to run an image. Because PebbleCounts doesn't allow you to save
 
   * **Ortho With Default Arguments:** (Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/))
 ```
-python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y
+python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho y
 ```
   * **Ortho With Modified Arguments:** (Increase number of expected lithologies and the maximum grain size)
 ```
-python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y \
+python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho y \
   -lithologies 3 -maxGS 0.4
 ```
 
   * **Non-ortho Imagery With Default Arguments:** (Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**)
 ```
-python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho -n \
+python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
   -input_resolution 0.63
 ```
   * **Non-ortho Imagery With Modified Arguments:** (Increase number of expected lithologies and the maximum grain size (as above for ortho-imagery). Also, since the resolution of this image is sub-mm, I've doubled the default values for `-min_sz_factors`)
 ```
-python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho -n \
+python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
   -input_resolution 0.63  -lithologies 3 -maxGS 0.4 -min_sz_factors 200 20 4
 ```
 
