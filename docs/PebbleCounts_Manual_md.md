@@ -232,9 +232,7 @@ Now you're ready to run an image. Because PebbleCounts doesn't allow you to save
 
 ## Step-by-Step Example
 
-1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands:
-
-**Note:** While all of the default arguments can be modified at the command line, it is recommended to stick mostly to the default values. In most cases, only the expected lithologies and maximum expected grain-size need to be modified for different images.
+1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands (**Note:** While all of the default arguments can be modified at the command line, it is recommended to stick mostly to the default values. In most cases, only the expected lithologies and maximum expected grain-size need to be modified for different images. For sub-mm resolution imagery, it may be necessary to double the `-min_sz_factors` default values as well.):
 
   * **Ortho With Default Arguments:** Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/).
 ```
