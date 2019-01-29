@@ -234,10 +234,7 @@ Now you're ready to run an image. Because PebbleCounts doesn't allow you to save
 
 1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands:
 
-  * **Ortho With Default Arguments:** Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/).
-```
-python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y
-```
+  * **Ortho With Default Arguments:** Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/). ```python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho -y```
   * **Ortho With Modified Arguments:**
     * Increase number of expected lithologies:
 ```
