@@ -176,13 +176,14 @@ optional arguments:
                         distinct colors? DEFAULT=1
   -maxGS MAXGS          Maximum expected longest axis grain size in meters.
                         DEFAULT=0.3
-  -cutoff CUTOFF        Cutoff factor in pixels for inclusion of pebble in
-                        final count. DEFAULT=9
+  -cutoff CUTOFF        Cutoff factor (minimum b-axis length) in pixels for
+                        inclusion of pebble in final count. 10 is good for ~1
+                        mm/pixel images, 25 for < 0.8 mm/pixel. DEFAULT=10
   -min_sz_factors MIN_SZ_FACTORS [MIN_SZ_FACTORS ...]
                         Factors to multiply cutoff value by at each scale.
                         Used to clean-up the masks for easier clicking. The
                         default values are good for ~1 mm/pixel imagery but
-                        should be doubled for sub-millimeter or halved for
+                        should be doubled for < 0.8 mm/pixel or halved for
                         centimeter resolution imagery. DEFAULT=[100, 10, 2]
   -win_sz_factors WIN_SZ_FACTORS [WIN_SZ_FACTORS ...]
                         Factors to multiply maximum grain-size (in pixels) by

@@ -1,7 +1,7 @@
 # PebbleCounts - a tool for measuring gravel-bed river grain-size
 #       Developed by Ben Purinton (purinton[at]uni-potsdam.de)
 #       26 November 2018
-#       See the help manual for instructions on use   
+#       See the help manual for instructions on use at: https://github.com/bpurinton/PebbleCounts
 
 # =============================================================================
 # Load the modules
@@ -42,9 +42,9 @@ parser.add_argument("-lithologies", type=int,
 parser.add_argument("-maxGS", type=float, 
                     help="Maximum expected longest axis grain size in meters. DEFAULT=0.3", default=0.3)
 parser.add_argument("-cutoff", type=int, 
-                    help="Cutoff factor in pixels for inclusion of pebble in final count. DEFAULT=9", default=9)
+                    help="Cutoff factor (minimum b-axis length) in pixels for inclusion of pebble in final count. 10 is good for ~1 mm/pixel images, 25 for < 0.8 mm/pixel. DEFAULT=10", default=10)
 parser.add_argument("-min_sz_factors", nargs='+', type=float, 
-                    help="Factors to multiply cutoff value by at each scale. Used to clean-up the masks for easier clicking. The default values are good for ~1 mm/pixel imagery but should be doubled for sub-millimeter or halved for centimeter resolution imagery. DEFAULT=[100, 10, 2]", default=[100, 10, 2])
+                    help="Factors to multiply cutoff value by at each scale. Used to clean-up the masks for easier clicking. The default values are good for ~1 mm/pixel imagery but should be doubled for < 0.8 mm/pixel or halved for centimeter resolution imagery. DEFAULT=[100, 10, 2]", default=[100, 10, 2])
 parser.add_argument("-win_sz_factors", nargs='+', type=float, 
                     help="Factors to multiply maximum grain-size (in pixels) by at each scale. The default values are good for millimeter and sub-millimeter imagery, but should be doubled for coarser centimeter imagery. DEFAULT=[10, 2, 1]", default=[10, 2, 1])
 parser.add_argument("-improvement_ths", nargs='+', type=float, 
@@ -465,7 +465,7 @@ for index in range(len(windowSizes)):
             mask[MASK==False] = False
             # label the mask and give each region a random rgb color
             color_labels, _ = ndi.label(mask)
-            color_choice = [list(np.random.choice(range(255), size=3)) for x in range(40)]
+            color_choice = [list(np.random.choice(range(255), size=3)) for x in range(100)]
             mask_color = color.label2rgb(color_labels, colors=color_choice, bg_label=0, bg_color=[0, 0, 0])
             # add to master mask
             master_mask = master_mask + mask_color.astype(np.uint8)
@@ -541,13 +541,17 @@ for index in range(len(windowSizes)):
                 if grain.minor_axis_length < float(cutoff) or grain.major_axis_length < float(cutoff):
                     continue
                 else:
+                    # dilate the grains
+                    grain_dil = morph.dilation(grain.image, selem=morph.selem.square(2)).astype(int)
+                    grain_dil = np.pad(grain_dil, ((1, 1), (1,1)), 'constant')
+                    b = meas.regionprops(grain_dil, coordinates='xy')[0].minor_axis_length
+                    a = meas.regionprops(grain_dil, coordinates='xy')[0].major_axis_length
                     # get the average color from HSV color space in the grain mask
                     Havg = np.mean(np.asarray([hue[tuple(idx)] for idx in grain.coords]))
                     Savg = np.mean(np.asarray([sat[tuple(idx)] for idx in grain.coords]))
                     # append the grain and color parameters
                     grains.append((grain.centroid[0]+ulx, grain.centroid[1]+uly, 
-                               grain.minor_axis_length, grain.major_axis_length, 
-                               grain.orientation, grain.area, Havg, Savg))
+                               b, a, grain.orientation, grain.filled_area, Havg, Savg))
 
             # add the chosen grains to the ignore mask
             labels[labels != 0] = 1
@@ -569,9 +573,8 @@ for index in range(len(windowSizes)):
 # get the lithology labels using kmeans on the colors
 hues, sats = [], []
 for grain in grains:    
-    hue, sat = grain[-2], grain[-1]
-    hues.append(hue)
-    sats.append(sat)
+    hues.append(grain[-2])
+    sats.append(grain[-1])
 hues = np.asarray(hues)
 sats = np.asarray(sats)
 # re-run kmeans separation on the color channels
@@ -593,6 +596,11 @@ color_labels = lut[color_labels]
 # make a plot of the fit grains 
 plt.figure(figsize=(10,10))
 plt.imshow(cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB))
+labels, _ = ndi.label(all_labels)
+labels = labels.astype(float)
+labels[labels == 0] = np.nan
+labels[np.isfinite(labels)] = 255
+plt.imshow(labels, cmap='gray', alpha = 0.5)
 for kmeans_label, grain in enumerate(grains):    
     litho = color_labels[kmeans_label]
     y0, x0 = grain[0], grain[1]
@@ -610,7 +618,6 @@ for kmeans_label, grain in enumerate(grains):
     plt.plot((x0, x2), (y0, y2), '-r', linewidth=1)
     plt.plot(x0, y0, '.g', markersize=2)
     plt.plot(x, y, 'r--', linewidth=0.7)
-    plt.text(x0, y0, "{:d}".format(litho), color='m', fontsize=7)
     plt.axis('off')
 plt.savefig(fig_out, dpi=300)
 plt.close()
