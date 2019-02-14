@@ -25,6 +25,9 @@ Happy clicking!
 ## Disclaimer
 PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have problems installing or running the software contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
 
+# Quick note on imagery and running PebbleCounts
+Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject). Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. Furthermore, the algorithm is most effective on images of 0.8-1.2 mm/pixel resolution, where a lower cutoff of 10-pixels is appropriate. Resampling can also be accomplished quickly in [gdal](https://www.gdal.org/). For higher resolution (< 0.8 mm/pixel) imagery it's recommended not to go above 1 by 1 meter areas, particularly if there are many < 1 cm pebbles, and also to increase the lower cutoff (`-cutoff` flag) value to 25-pixels. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. If at anytime you want to end the application simply press *CTRL + C*.
+
 # Installation
 The first step is downloading the [GitHub repository](https://github.com/bpurinton/PebbleCounts) somewhere on your computer. The folder should contain:
 
@@ -218,7 +221,7 @@ Here's a bit more detail on some of the less obvious inputs to clarify:
 * `-resize` controls the pop-up window size for the GUI. If you notice the window is too small to see the grains then use a high value like 0.9, but if the image is partially off-screen you should try lowering the value to around 0.8.
 * `-lithologies` is the expected number of different rock types in the image with distinct coloration differences. It defaults to 1, meaning the lithology is uniform or the color differences between lithologies are minimal and therefore difficult to discern from the image alone.
 * `-maxGS` is the expected size in meters of the largest rock in the image based on some field knowledge. This value is used during the windowing to set the appropriate sizes at the three scales in conjunction with the `-win_sz_factors` input.
-* `-cutoff` is the algorithm's lower limit on b-axis measurement given in pixels. The default value of 9 is what we found to be reliable for accurate distribution measurement using PebbleCounts. This value is also used by the `-min_sz_factors` input to cleanup the mask at each of the three window scales and should also be scaled depending on the imagery resolution (sub-mm, mm, cm).
+* `-cutoff` is the algorithm's lower limit on b-axis measurement given in pixels. The default value of 10 is what we found to be reliable for accurate distribution measurement using ~1 mm/pixel imagery. A value of 25-pixels is more appropriate for higher resolutions (e.g., < 0.8 mm/pixel). This value is also used by the `-min_sz_factors` input to cleanup the mask at each of the three window scales and should also be scaled depending on the imagery resolution (sub-mm, mm, cm).
 * `-improvement_ths` is the fractional percentage (from 0-1) that k-means uses to assess convergence and stopping. The default values are probably good here.
 * `-coordinate_scales` is the fractional percentage (from 0-1) to scale the x,y coordinates of each pixel compared with the color information in the k-means segmentation. Since we want to allow for anisotropic grains covering large areas if they have semi-uniform color, we want to scale the relative importance of pixel location by approximately 50% of the color, hence the default values of 0.5 at each scale.
 * `-nl_means_chroma_filts` is the level of chromaticity filtering to apply during [non-local means denoising](https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html), which should be reduced at each scale. Higher values lead to more smoothing of the image and a cartoonish appearance. The default values should again be good here.
@@ -226,13 +229,9 @@ Here's a bit more detail on some of the less obvious inputs to clarify:
 * `-tophat_th`, `-sobel_th`, and `-canny_sig` are the [tophat](http://scikit-image.org/docs/dev/api/skimage.morphology.html#skimage.morphology.black_tophat) filter percentile threshold, [Sobel](http://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.sobel) filter percentile threshold, and [Canny](http://scikit-image.org/docs/dev/auto_examples/edges/plot_canny.html) edge detection smoothing standard deviation. These are the values used on edge detection from the gray-scale image and are probably good at the default value. The same value is used for each scale.
 
 
-# Quick note on imagery and running PebbleCounts
-Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject). Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. Furthermore, the algorithm is most effective on images of 0.8-1.2 mm/pixel resolution, where a lower cutoff of 10-pixels is appropriate. Resampling can also be accomplished quickly in [gdal](https://www.gdal.org/). For higher resolution (< 0.8 mm/pixel) imagery it's recommended not to go above 1 by 1 meter areas, particularly if there are many < 1 cm pebbles, and also to increase the lower cutoff (`-cutoff` flag) value to 25-pixels. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. If at anytime you want to end the application simply press *CTRL + C*.
+# Step-by-Step Example
 
-
-## Step-by-Step Example
-
-1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands (**Note:** While all of the default arguments can be modified at the command line, it is recommended to stick mostly to the default values. In most cases, only the expected lithologies and maximum expected grain-size need to be modified for different images. For sub-mm resolution imagery, it may be necessary to double the `-min_sz_factors` default values as well.):
+1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands (**Note:** While all of the default arguments can be modified at the command line, it is recommended to stick mostly to the default values. In most cases, only the expected lithologies and maximum expected grain-size need to be modified for different images given 0.8-1.2 mm/pixel imagery. For < 0.8 mm/pixel resolution imagery, it is necessary to double the `-min_sz_factors` default values and to use a `-cutoff` value of 25-pixels.):
 
   * **Ortho With Default Arguments:** (Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/))
 ```
@@ -249,7 +248,7 @@ python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho 
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
   -input_resolution 0.63 -cutoff 25
 ```
-  * **Non-ortho Imagery With Modified Arguments:** (Increase number of expected lithologies and decrease the maximum grain size. Also, since the resolution of this image is sub-mm, I've doubled the default values for `-min_sz_factors`)
+  * **Non-ortho Imagery With Modified Arguments:** (Increase number of expected lithologies and decrease the maximum grain size. Also, since the resolution of this image is < 0.8 mm/pixel, I've doubled the default values for `-min_sz_factors`)
 ```
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
   -input_resolution 0.63 -cutoff 25 -lithologies 2 -maxGS 0.2 -min_sz_factors 200 20 4
@@ -291,7 +290,7 @@ Cleaning up k-means mask
 
 7. Repeat the clicking on each window that pops up (see the command window for what number window out of the full number you are on). With a little practice this will go quickly. After the windows are done the results will be saved out and you can repeat from step 1 with another image.
 
-### An important note on clicking!
+## An important note on clicking!
 As shown in Figure \ref{Fig:example_clicking}, PebbleCounts does not provide a perfect segmentation. Two errors you will commonly note are:
 
 1. Under-segmentation of overlapping grains. Avoid clicking these regions or the resulting ellipse will be fit to many grains.
