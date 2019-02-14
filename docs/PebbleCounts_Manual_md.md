@@ -225,10 +225,10 @@ Here's a bit more detail on some of the less obvious inputs to clarify:
 * `-bilat_filt_szs` is the square window size to apply for [bilateral filtering](https://docs.opencv.org/3.1.0/d4/d13/tutorial_py_filtering.html), with the aim of further smoothing the image while preserving interstices between the grains. The size of this filter window should be reduced with the windowing scale. The default values are also good here.
 * `-tophat_th`, `-sobel_th`, and `-canny_sig` are the [tophat](http://scikit-image.org/docs/dev/api/skimage.morphology.html#skimage.morphology.black_tophat) filter percentile threshold, [Sobel](http://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.sobel) filter percentile threshold, and [Canny](http://scikit-image.org/docs/dev/auto_examples/edges/plot_canny.html) edge detection smoothing standard deviation. These are the values used on edge detection from the gray-scale image and are probably good at the default value. The same value is used for each scale.
 
-# Running PebbleCounts
-Now you're ready to run an image. Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. For higher resolution (sub-mm) imagery it's recommended not to go above 1 by 1 meters. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. If at anytime you want to end the application simply press *CTRL + C*.
 
-**Note on ortho-imagery:** Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject).
+# Quick note on imagery and running PebbleCounts
+Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject). Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. Furthermore, the algorithm is most effective on images of 0.8-1.2 mm/pixel resolution, where a lower cutoff of 10-pixels is appropriate. Resampling can also be accomplished quickly in [gdal](https://www.gdal.org/). For higher resolution (< 0.8 mm/pixel) imagery it's recommended not to go above 1 by 1 meter areas, particularly if there are many < 1 cm pebbles, and also to increase the lower cutoff (`-cutoff` flag) value to 25-pixels. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. If at anytime you want to end the application simply press *CTRL + C*.
+
 
 ## Step-by-Step Example
 
@@ -244,28 +244,28 @@ python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho 
   -lithologies 3 -maxGS 0.4
 ```
 
-  * **Non-ortho Imagery With Default Arguments:** (Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**)
+  * **Non-ortho Imagery With Default Arguments:** (Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**. Also, for < 0.8 mm/pixel imagery we recommend changing the lower cutoff to 25-pixels)
 ```
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
-  -input_resolution 0.63
+  -input_resolution 0.63 -cutoff 25
 ```
   * **Non-ortho Imagery With Modified Arguments:** (Increase number of expected lithologies and decrease the maximum grain size. Also, since the resolution of this image is sub-mm, I've doubled the default values for `-min_sz_factors`)
 ```
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
-  -input_resolution 0.63  -lithologies 2 -maxGS 0.2 -min_sz_factors 200 20 4
+  -input_resolution 0.63 -cutoff 25 -lithologies 2 -maxGS 0.2 -min_sz_factors 200 20 4
 ```
 
-2. Interactively subset the image by typing `y` or don't by typing `n` (Figure \ref{Fig:pc_01_subsetting}). If you do subset, click and drag a box on the pop-up window and press the *spacebar* to close the window again.
+2. Interactively subset the image by typing `y` or don't by typing `n`. If you do subset, click and drag a box on the pop-up window and press the *spacebar* to close the window again.
 
-![Interactive subsetting of full image. Click and drag a rectangle then press the *spacebar*.\label{Fig:pc_01_subsetting}](figs/pc_01_subsetting.png)
+3. Input a percentage (0-100) of the [Otsu](https://en.wikipedia.org/wiki/Otsu%27s_method) shadow threshold value, then press enter. This will open a pop-up window displaying the image with the Otsu mask in white. On the keyboard press *r* to flash the original un-masked image, *y* to accept the mask and move on, and *n* to close the window and enter a new value (Figure \ref{Fig:otsu}).
 
-3. Input a percentage (0-100) of the [Otsu](https://en.wikipedia.org/wiki/Otsu%27s_method) shadow threshold value, then press enter. This will open a pop-up window displaying the image with the Otsu mask in white. On the keyboard press *r* to flash the original un-masked image, *y* to accept the mask and move on, and *n* to close the window and enter a new value (Figure \ref{Fig:pc_02_otsu50}).
+![Otsu thresholding of the image with an entered value 0-100. Press *r* to flash the original image, *y* to accept the mask, or *n* to try a different value.\label{Fig:otsu}](figs/otsu.PNG)
 
-![Otsu thresholding of the image with an entered value 0-100. Press *r* to flash the original image, *y* to accept the mask, or *n* to try a different value.\label{Fig:pc_02_otsu50}](figs/pc_02_otsu50.png)
+4. Is there a color you want to mask out in the scene? Maybe the sand is a uniform color distinct from the pebbles. If so, then in the next step enter `y`, which will bring up another pop-up window. With the window active, you can press *q* to close it if you decide not to color mask and *r* to flash the original image (Figure \ref{Fig:color}). Once you click a point in the window with a color you'd like to mask a second pop-up will open displaying the result of applying a mask to this color. Press *y* to accept the mask or *n* to close it and try another click in the first window (Figure \ref{Fig:color}). Pressing *y* here will return you to the command prompt where you can finish color masking by entering `n` or adding additional color masks by entering `y`.
 
-4. Is there a color you want to mask out in the scene? Maybe the sand is a uniform color distinct from the pebbles. If so, then in the next step enter `y`, which will bring up another pop-up window. With the window active, you can press *q* to close it if you decide not to color mask and *r* to flash the original image (Figure \ref{Fig:pc_03_colormask01}). Once you click a point in the window with a color you'd like to mask a second pop-up will open displaying the result of applying a mask to this color. Press *y* to accept the mask or *n* to close it and try another click in the first window (Figure \ref{Fig:pc_03_colormask02}). Pressing *y* here will return you to the command prompt where you can finish color masking by entering `n` or adding additional color masks by entering `y`.
+![Color masking clicking window. Click on a color you want to mask to open a second window and check it. Press *q* to close window or *r* to flash the original image. Press *y* to accept or *n* to try a different click in the previous window.\label{Fig:color}](figs/color.PNG)
 
-5. After these couple interactive steps, PebbleCounts will take over the automated windowing, filtering, edge detection, and k-means segmentation at each window. The command prompt should look something like this:
+5. After these couple interactive steps, PebbleCounts will take over the automated windowing, filtering, edge detection, and k-means segmentation at each window, after which a new window with the mask will open (Figure \ref{Fig:kmeans}). The command prompt should look something like this:
 ```
 Beginning k-means segmentation
 Scale 1 of 3
@@ -278,31 +278,21 @@ Sobel edge detection
 Running k-means
 Current number of clusters: 2, total inertia: 59896.391
 Current number of clusters: 3, total inertia: 48804.694
-Current number of clusters: 4, total inertia: 39567.055
-Current number of clusters: 5, total inertia: 34193.667
-Current number of clusters: 6, total inertia: 29956.034
-Current number of clusters: 7, total inertia: 25652.019
-Current number of clusters: 8, total inertia: 23202.660
-Current number of clusters: 9, total inertia: 22270.410
-Current number of clusters: 10, total inertia: 21233.908
-Current number of clusters: 11, total inertia: 19145.581
-Current number of clusters: 12, total inertia: 18094.143
-Current number of clusters: 13, total inertia: 18043.373
+.
+Current number of clusters: X, total inertia: XXXX
 Cleaning up k-means mask
 ```
 
-![Color masking clicking window. Click on a color you want to mask to open a second window and check it. Press *q* to close window or *r* to flash the original image.\label{Fig:pc_03_colormask01}](figs/pc_03_colormask01.png)
+![Automated segmentation via edge detection and k-means clustering and pop-up window.\label{Fig:kmeans}](figs/kmeans.PNG)
 
-![Color masking result window. Press *y* to accept or *n* to try a different click in the previous window.\label{Fig:pc_03_colormask02}](figs/pc_03_colormask02.png)
+6. After the mask is cleaned a new window will open where you need to click the good looking grains and ignore the bad ones (Figure \ref{Fig:example_clicking}). Left clicking anywhere on the image will produce a black circle at that point, meaning that you've selected all the pixels in this connected region as one grain. A right click anywhere on the image will remove the last click and exchange the black circle for a red one, indicating this area will not be considered (unless of course you add another left click to the region). Overlay the original image to help decide what is and is not a well delineated grain by pressing *r* once to open the image and *r* again to close the image and return to the mask. Once you are satisfied with your clicks press *q* to close the window and automatically move on to the next window and/or scale. The clicked grains will be automatically measured and added to the final output.
 
-6. After the mask is cleaned a new window will open where you need to click the good looking grains and ignore the bad ones (Figure \ref{Fig:example_clicking_fix}). Left clicking anywhere on the image will produce a black circle at that point, meaning that you've selected all the pixels in this connected region as one grain. A right click anywhere on the image will remove the last click and exchange the black circle for a red one, indicating this area will not be considered (unless of course you add another left click to the region). Overlay the original image to help decide what is and is not a well delineated grain by pressing *r* once to open the image and *r* again to close the image and return to the mask. Once you are satisfied with your clicks press *q* to close the window and automatically move on to the next window and/or scale. The clicked grains will be automatically measured and added to the final output.
-
-![(a) Interactive k-means mask clicking window. A left click adds a pebble region and black circle. Pressing *q* will close the image and continue segmentation on the next window. (b) Pressing *r* opens the original image to check the mask against, *r* again to close the original image. (c) Right click anywhere on the image to remove the last clicked point and replace the black circle with a red one. (d) Shows the final ellipses fit to each of the clicked regions. Numbering in the ellipse corresponds to the potential lithologic unit.\label{Fig:example_clicking_fix}](figs/example_clicking_fix.png)
+![(a) Interactive k-means mask clicking window. A left click adds a pebble region and black circle. Pressing *q* will close the image and continue segmentation on the next window. (b) Pressing *r* opens the original image to check the mask against, *r* again to close the original image. (c) Right click anywhere on the image to remove the last clicked point and replace the black circle with a red one. (d) Shows the final ellipses fit to each of the clicked regions. \label{Fig:example_clicking}](figs/example_clicking.png)
 
 7. Repeat the clicking on each window that pops up (see the command window for what number window out of the full number you are on). With a little practice this will go quickly. After the windows are done the results will be saved out and you can repeat from step 1 with another image.
 
 ### An important note on clicking!
-As shown in Figure \ref{Fig:example_clicking_fix}, PebbleCounts does not provide a perfect segmentation. Two errors you will commonly note are:
+As shown in Figure \ref{Fig:example_clicking}, PebbleCounts does not provide a perfect segmentation. Two errors you will commonly note are:
 
 1. Under-segmentation of overlapping grains. Avoid clicking these regions or the resulting ellipse will be fit to many grains.
 
