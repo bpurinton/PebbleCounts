@@ -208,9 +208,9 @@ optional arguments:
                         Size of bilateral filtering windows for the different
                         scales. DEFAULT=[9, 5, 3]
   -tophat_th TOPHAT_TH  Top percentile threshold to take from tophat filter
-                        for edge detection. DEFAULT=90
+                        for edge detection. DEFAULT=0.9
   -sobel_th SOBEL_TH    Top percentile threshold to take from sobel filter for
-                        edge detection. DEFAULT=90
+                        edge detection. DEFAULT=0.9
   -canny_sig CANNY_SIG  Canny filtering sigma value for edge detection.
                         DEFAULT=2
   -resize RESIZE        Value to resize windows by should be between 0 and 1.
