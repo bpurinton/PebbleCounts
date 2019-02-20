@@ -57,10 +57,10 @@ parser.add_argument("-nl_means_chroma_filts", nargs='+', type=int,
                     help="Nonlocal means chromaticity filtering strength for the different scales. DEFAULT=[3, 2, 1]", default=[3, 2, 1])
 parser.add_argument("-bilat_filt_szs", nargs='+', type=int, 
                     help="Size of bilateral filtering windows for the different scales. DEFAULT=[9, 5, 3]", default=[9, 5, 3])
-parser.add_argument("-tophat_th", type=int, 
-                    help="Top percentile threshold to take from tophat filter for edge detection. DEFAULT=90", default=90)
-parser.add_argument("-sobel_th", type=int, 
-                    help="Top percentile threshold to take from sobel filter for edge detection. DEFAULT=90", default=90)
+parser.add_argument("-tophat_th", type=float, 
+                    help="Top percentile threshold to take from tophat filter for edge detection. DEFAULT=0.9", default=0.9)
+parser.add_argument("-sobel_th", type=float, 
+                    help="Top percentile threshold to take from sobel filter for edge detection. DEFAULT=0.9", default=0.9)
 parser.add_argument("-canny_sig", type=int, 
                     help="Canny filtering sigma value for edge detection. DEFAULT=2", default=2)
 parser.add_argument("-resize", type=float, 
@@ -369,7 +369,7 @@ for index in range(len(windowSizes)):
         # tophat edges
         print("Black tophat edge detection")
         tophat = morph.black_tophat(GRAY, selem=morph.selem.disk(1))
-        tophat = tophat < np.percentile(tophat, tophat_th)
+        tophat = tophat < np.percentile(tophat, tophat_th*100)
         tophat = morph.remove_small_holes(tophat, area_threshold=cutoff, connectivity=2)
         foo = func.featAND_fast(MASK, tophat)
         MASK = np.logical_and(foo, MASK)
@@ -382,7 +382,7 @@ for index in range(len(windowSizes)):
         # sobel edges
         print("Sobel edge detection")
         sobel = filt.sobel(GRAY)
-        sobel = sobel < np.percentile(sobel, sobel_th)
+        sobel = sobel < np.percentile(sobel, sobel_th*100)
         sobel = morph.remove_small_holes(sobel, area_threshold=cutoff, connectivity=2)
         sobel = morph.thin(np.invert(sobel))
         sobel = np.invert(sobel)

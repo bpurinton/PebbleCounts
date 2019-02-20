@@ -22,8 +22,18 @@ and cite it if you use the results in your own work.
 
 Happy clicking!
 
+# Software Citation
+Purinton, Benjamin; Bookhagen, Bodo (2019): PebbleCounts: a Python grain-sizing algorithm for gravel-bed river imagery. V. 1.0. GFZ Data Services. http://doi.org/10.5880/fidgeo.2019.007
+
+# License
+GNU General Public License, Version 3, 29 June 2007
+
+Copyright © 2019 Benjamin Piurinton, University of Potsdam, Potsdam, Germany
+
+PebbleCounts is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. PebbleCounts is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
 ## Disclaimer
-PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have problems installing or running the software contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
+PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have any problems contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
 
 # Quick note on imagery and running PebbleCounts
 Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject). Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. Furthermore, the algorithm is most effective on images of 0.8-1.2 mm/pixel resolution, where a lower cutoff of 10-pixels is appropriate. Resampling can also be accomplished quickly in [gdal](https://www.gdal.org/). For higher resolution (< 0.8 mm/pixel) imagery it's recommended not to go above 1 by 1 meter areas, particularly if there are many < 1 cm pebbles, and also to increase the lower cutoff (`-cutoff` flag) value to 25-pixels. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. If at anytime you want to end the application simply press *CTRL + C*.
@@ -208,9 +218,9 @@ optional arguments:
                         Size of bilateral filtering windows for the different
                         scales. DEFAULT=[9, 5, 3]
   -tophat_th TOPHAT_TH  Top percentile threshold to take from tophat filter
-                        for edge detection. DEFAULT=90
+                        for edge detection. DEFAULT=0.9
   -sobel_th SOBEL_TH    Top percentile threshold to take from sobel filter for
-                        edge detection. DEFAULT=90
+                        edge detection. DEFAULT=0.9
   -canny_sig CANNY_SIG  Canny filtering sigma value for edge detection.
                         DEFAULT=2
   -resize RESIZE        Value to resize windows by should be between 0 and 1.

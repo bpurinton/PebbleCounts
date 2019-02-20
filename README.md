@@ -15,6 +15,16 @@ Happy clicking!
 
 <img src="docs/figs/logo.png" width="300px" >
 
+# Software Citation
+Purinton, Benjamin; Bookhagen, Bodo (2019): PebbleCounts: a Python grain-sizing algorithm for gravel-bed river imagery. V. 1.0. GFZ Data Services. http://doi.org/10.5880/fidgeo.2019.007
+
+# License
+GNU General Public License, Version 3, 29 June 2007
+
+Copyright © 2019 Benjamin Piurinton, University of Potsdam, Potsdam, Germany
+
+PebbleCounts is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. PebbleCounts is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
 ## Disclaimer
 PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have any problems contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
 
