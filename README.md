@@ -45,7 +45,7 @@ Once you've got `conda` commands installed, you can open a command-line terminal
 conda create --name pebblecounts python=3.6 opencv shapely \
    scikit-image scikit-learn numpy gdal scipy matplotlib tk
 ```
-Or just use the environment .yml file provided with:
+Or just use the `.yml` file provided with:
 ```
 conda env create -f environment.yml
 ```
