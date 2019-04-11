@@ -35,16 +35,11 @@ In addition to the manual-clicking version of PebbleCounts based on k-means segm
 # Installation
 The first step is downloading the GitHub repository somewhere on your computer, and unzipping it. There you will find the Python algorithms (e.g., `PebbleCounts.py`), an `environment.yml` file containing the Python dependencies for quick installs with `conda` on Windows, a folder `example_data` with two example images one orthorectified and the other raw, and a folder `docs` containing the [full manual](docs/PebbleCounts_Manual.pdf).
 
-## Experienced Users
-For those familiar with Python, the best way to install PebbleCounts is by simply downloading the GitHub repository, navigating to the PebbleCounts folder at the command line, ensuring all Python dependencies are installed (see the `environment.yml` file) and getting started by going through the [full manual](docs/PebbleCounts_Manual.pdf)
+For newcomers to Python, no worries! Installation should be a cinch on most machines. First, you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). Download either the 32- or 64-bit Miniconda installer of Python 3.x then follow the instructions (either using the `.exe` file for Windows, `.pkg` for Mac, or `bash installer` for Linux). Add Miniconda to the system `PATH` variable when prompted.
 
-## Less Experienced Users
-For newcomers to Python, no worries! Installation should be a cinch on most machines and I'll describe it here for Windows. First, you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)).
-
-Download either the 32- or 64-bit installer of Python 3.x then follow the instructions. Add Miniconda to the system `PATH` variable when prompted. PebbleCounts has a number of important dependencies including [gdal](https://www.gdal.org/) for geo-referenced raster manipulation, [openCV](https://opencv.org/) for image manipulation and GUI operation, [scikit-image](https://scikit-image.org/) for filtering and measuring, [scikit-learn](https://scikit-learn.org/stable/) for k-means segmentation, along with a number of standard Python libraries including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [matplotlib](https://matplotlib.org/), and [tkinter](https://wiki.python.org/moin/TkInter).
+PebbleCounts has a number of important dependencies including [gdal](https://www.gdal.org/) for georeferenced raster manipulation, [openCV](https://opencv.org/) for image manipulation and GUI operation, [scikit-image](https://scikit-image.org/) for filtering and measuring, [scikit-learn](https://scikit-learn.org/stable/) for k-means segmentation, [shapely](https://shapely.readthedocs.io/en/latest/) for geometry operations, along with a number of standard Python libraries including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [matplotlib](https://matplotlib.org/), and [tkinter](https://wiki.python.org/moin/TkInter).
 
 ### For Windows
-
 Once you've got `conda` commands installed, you can open a command-line terminal and create a conda environment with:
 ```
 conda create --name pebblecounts python=3.6 opencv shapely \
@@ -64,14 +59,14 @@ deactivate
 ```
 
 ### For Mac and Linux Users
-Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `conda` to the `activate` and `deactivate` commands above).
+Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `conda` to the `activate` and `deactivate` commands above). Also we need to install `opencv` separately from within the virtual environment using the `pip` package manager.
 
 Similar to the above, once you have `conda` installed we create the virtual environment:
 ```
 conda create --name pebblecounts python=3.6 shapely \
    scikit-image scikit-learn numpy gdal scipy matplotlib tk
 ```
-and once installation is complete (and assuming no errors during the install) activate the new environment to run PebbleCounts by:
+and once installation is complete (and assuming no errors during the install) activate the new environment by:
 ```
 conda activate pebblecounts
 ```
@@ -85,4 +80,4 @@ conda deactivate
 ```
 
 #### Issues with opencv on Mac and Linux
-Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/). The shell script `install_openCV_env_ubuntu18.sh` should allow for a clean install of an openCV inclusive `pebblecounts` conda environment on an Ubuntu v.18 system.
+Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/).
