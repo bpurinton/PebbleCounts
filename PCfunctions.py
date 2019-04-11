@@ -1,6 +1,6 @@
 # Python module accompanying PebbleCounts
 #       Developed by Ben Purinton (purinton[at]uni-potsdam.de)
-#       26 November 2018
+#       29 March 2019
 
 import time
 import numpy as np
@@ -278,15 +278,15 @@ def getXYgrid(geo_rast):
     """
     takes input geo raster and outputs numpy arrays of X and Y coordinates (center of pixel) 
     """
-    # create X and Y
+    # create X and Y and get the resolution (step)
     ds = gdal.Open(geo_rast)
     cols, rows = ds.RasterXSize, ds.RasterYSize
     gt = ds.GetGeoTransform()
     ds = None
+    step = gt[1]
     # size of grid (minx, stepx, 0, maxy, 0, -stepy)
     minx, maxy = gt[0], gt[3]
-    maxx, miny = gt[0] + gt[1] * cols, gt[3] + gt[5] * rows  
-    step = gt[1]
+    maxx, miny = gt[0] + step * cols, gt[3] + -step * rows  
     # center of pixel
     ygrid = np.arange(miny + (step / 2), maxy, step) 
     xgrid = np.arange(minx + (step / 2), maxx, step)

@@ -7,7 +7,7 @@ author: "Ben Purinton ([purinton@uni-potsdam.de](purinton@uni-potsdam.de))"
 keywords: [grain size, rivers, geomorphology]
 titlepage: true
 titlepage-rule-height: 2
-toc-own-page: true 
+toc-own-page: true
 listings-disable-line-numbers: true
 logo: "figs/logo.png"
 logo-width: 360
@@ -16,11 +16,9 @@ logo-width: 360
 # Introduction
 This guide will walk you through the installation and running of PebbleCounts at the command-line. PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. It is a semi-automated  program in that edge detection and k-means segmentation are performed automatically, but the user must interactively hand-click the well outlined pebbles and ignore the bad results. The software is extremely useful for area-by-number pebble counts without painstaking field work or the disruption of the natural environment via gravel removal. For the detailed background and validation, check out the publication accompanying the algorithm:
 
-**PUBLICATION DOI.** 
+**PUBLICATION DOI.**
 
 and cite it if you use the results in your own work.
-
-Happy clicking!
 
 # Software Citation
 Purinton, Benjamin; Bookhagen, Bodo (2019): PebbleCounts: a Python grain-sizing algorithm for gravel-bed river imagery. V. 1.0. GFZ Data Services. http://doi.org/10.5880/fidgeo.2019.007
@@ -41,7 +39,7 @@ Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipe
 # Installation
 The first step is downloading the [GitHub repository](https://github.com/bpurinton/PebbleCounts) somewhere on your computer. The folder should contain:
 
-1. Three Python scripts: 
+1. Three Python scripts:
   * `PebbleCounts.py`
   * `PCfunctions.py`
   * `calculate_camera_resolution.py`
@@ -56,8 +54,8 @@ The first step is downloading the [GitHub repository](https://github.com/bpurint
 ## For the Pros
 For those familiar with Python, the best way to install PebbleCounts is by simply downloading the [GitHub repository](https://github.com/bpurinton/PebbleCounts), navigating to the PebbleCounts folder at the command line, ensuring all Python dependencies are installed (see the `environment.yml` file) and getting started by skipping ahead to **Command-line Options**:
 
-## For Newbies 
-For newcomers to Python, no worries! Installation should be a cinch on most machines and I'll describe it here for Windows. First of all you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). 
+## For Newbies
+For newcomers to Python, no worries! Installation should be a cinch on most machines and I'll describe it here for Windows. First of all you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)).
 
 Download either the 32- or 64-bit installer of Python 3.x then follow the installation instructions. It's recommend to add Miniconda to the system `PATH` variable when prompted. PebbleCounts has a number of important dependencies including [gdal](https://www.gdal.org/) for georeferenced raster manipulation, [openCV](https://opencv.org/) for image manipulation and GUI operation, [scikit-image](https://scikit-image.org/) for filtering and measuring, [scikit-learn](https://scikit-learn.org/stable/) for k-means segmentation, along with a number of standard Python libraries including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [matplotlib](https://matplotlib.org/), and [tkinter](https://wiki.python.org/moin/TkInter).
 
@@ -103,7 +101,7 @@ Below is an in-depth description of each processing step applied by PebbleCounts
 11. When the improvement threshold is met, the vector is transformed back into image space, maintaining the k-means labels. Each of these labels is then separately selected and cleaned up via a combination of [binary erosion, dilation, removal of small objects, and clearing of border-touching elements](http://scikit-image.org/docs/dev/api/skimage.morphology.html). The cleaned label masks are then combined into a final potential grain mask.
 12. The potential grain mask is now displayed over the original RGB color image and the user is asked to click labels that contain single, well-defined grains. Here it is suggested that any grain mask that contains the majority of the grain (particularly the edges of the grain) is selected, even if the k-means segmentation led to jagged edges and over-segmentation within the grain. This is because the final ellipse fitting ignores these holes and fits to the largest area covered by the mask label.
 13. Each of the labels with a user-selected point clicked inside of it is analyzed for [region properties](http://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) to extract the grain centroid, average hue and saturation color from HSV space, area of the grain in number of pixels, and the following parameters of an ellipse fit to the region: minor and major axis length and orientation of the ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in Cartesian coordinates.
-14. The clicked regions are then added to the shadow/color mask and the processing is repeated from step 6 on the next window or beginning at the next of the three scales. 
+14. The clicked regions are then added to the shadow/color mask and the processing is repeated from step 6 on the next window or beginning at the next of the three scales.
 15. Following all windowing, the resulting average color for each grain (in hue and saturation) is again passed to a k-means clustering step, however, the number of clusters is user supplied in this case as the number of expected uniquely colored lithologies present in the image. This provides another numbered label for each grain with the estimated lithology. For uniform lithology this value should be 1.
 16. The results of each grain are output as a comma separated value text file. The measurements are given in pixel and metric units by multiplying the pixel amounts by the image resolution in meters per pixel. In case of a UTM projected georeferenced image, the UTM X (Easting) and Y (Northing) coordinates of the grain centroid are also provided. Additionally, from the color mask a fractional percentage of the image that was masked by the HSV range is provided in the output file (e.g., the percentage sand) along with the fractional percentage of the image that was not measured (so combined shadows and grains not identified by PebbleCounts).
 
@@ -321,4 +319,3 @@ PebbleCounts saves out a few outputs in the same folder that the image resides:
 The results .csv has an entry for each grain (Figure \ref{Fig:output_csv}) showing the fraction of the scene not measured (combined background shadow and unmeasured grains) the fraction of the scene that was selected by the color mask as background color (e.g., sand) and each grains' characteristics including a- and b-axis of the fit ellipse in pixels and in meters, the area covered by the grain mask in pixels and square meters, the orientation of the fit ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in cartesian coordinates. If the input imagery is georeferenced the UTM Northing (Y) and Easting (X) coordinates of the pebble's centroid are be provided.
 
 ![Example .csv file output by PebbleCounts for a georeferenced image. *perc. not meas.* is the fractional percentage of the image that was either shadows or not measured by PebbleCounts and *perc. background color* is the fractional percentage of the image that was masked during interactive HSV color selection (e.g., for sand).\label{Fig:output_csv}](figs/output_csv.png)
-
