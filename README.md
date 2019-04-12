@@ -1,6 +1,6 @@
 ---
 title: "PebbleCounts Grain-sizing Application"
-date: "November 2018"
+date: "March 2019"
 author: "Ben Purinton ([purinton@uni-potsdam.de](purinton@uni-potsdam.de))"
 ---
 

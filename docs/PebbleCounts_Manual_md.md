@@ -2,7 +2,7 @@
 title: "*Installing and Running PebbleCounts*"
 subtitle: "Grain-sizing algorithm for gravel-bed river imagery"
 subject: "Geomorphology"
-date: "December 2018"
+date: "March 2019"
 author: "Ben Purinton ([purinton@uni-potsdam.de](purinton@uni-potsdam.de))"
 keywords: [grain size, rivers, geomorphology]
 titlepage: true
@@ -34,37 +34,25 @@ PebbleCounts is free software: you can redistribute it and/or modify it under th
 PebbleCounts is a free (released under GNU General Public License v3.0) and open-source application written by a geologist / amateur programmer. If you have any problems contact me [purinton@uni-potsdam.de](purinton@uni-potsdam.de) and I can help!
 
 # Quick note on imagery and running PebbleCounts
-Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject). Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. Furthermore, the algorithm is most effective on images of 0.8-1.2 mm/pixel resolution, where a lower cutoff of 10-pixels is appropriate. Resampling can also be accomplished quickly in [gdal](https://www.gdal.org/). For higher resolution (< 0.8 mm/pixel) imagery it's recommended not to go above 1 by 1 meter areas, particularly if there are many < 1 cm pebbles, and also to increase the lower cutoff (`-cutoff` flag) value to 25-pixels. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. If at anytime you want to end the application simply press *CTRL + C*.
+Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system), providing the scale in meters. You can use the [gdal](https://www.gdal.org/) command line utilities to [translate rasters between various projections](https://www.nceas.ucsb.edu/scicomp/recipes/gdal-reproject). Because PebbleCounts doesn't allow you to save work in the middle of clicking it's recommended that you don't use images covering areas of more than 2 by 2 meters or so. Furthermore, the algorithm is most effective on images of 0.8-1.2 mm/pixel resolution, where a lower cutoff of 20-pixels is appropriate. Resampling can also be accomplished quickly in [gdal](https://www.gdal.org/). For higher resolution (< 0.8 mm/pixel) imagery it's recommended not to go above 1 by 1 meter areas, particularly if there are many < 1 cm pebbles. If you want to cover a larger area simply break the image into smaller parts and process each individually, so you can give yourself a break. If at anytime you want to end the application simply press *CTRL + C*.
+
+## The PebbleCountsAuto Function
+In addition to the manual-clicking version of PebbleCounts based on k-means segmentation, we have also developed and included an automated version that has higher uncertainties. We recommend using PebbleCounts in a subset of data to validate larger areas run in PebbleCountsAuto. The description of the automatic algorithm and uncertainties can be found in the publication (**PUBLICATION DOI TO BE ADDED**).
 
 # Installation
-The first step is downloading the [GitHub repository](https://github.com/bpurinton/PebbleCounts) somewhere on your computer. The folder should contain:
+The first step is downloading the GitHub repository somewhere on your computer, and unzipping it. There you will find the Python algorithms (e.g., `PebbleCounts.py`), an `environment.yml` file containing the Python dependencies for quick installs with `conda` on Windows, a folder `example_data` with two example images one orthorectified and the other raw, and a folder `docs` containing the [full manual](docs/PebbleCounts_Manual.pdf).
 
-1. Three Python scripts:
-  * `PebbleCounts.py`
-  * `PCfunctions.py`
-  * `calculate_camera_resolution.py`
+For newcomers to Python, no worries! Installation should be a cinch on most machines. First, you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). Download either the 32- or 64-bit Miniconda installer of Python 3.x then follow the instructions (either using the `.exe` file for Windows, `.pkg` for Mac, or `bash installer` for Linux). Add Miniconda to the system `PATH` variable when prompted.
 
-2. An `environment.yml` file containing the Python dependencies and a `install_openCV_env_ubuntu18.sh` shell script for creating an openCV environment with conda on Ubuntu
+PebbleCounts has a number of important dependencies including [gdal](https://www.gdal.org/) for georeferenced raster manipulation, [openCV](https://opencv.org/) for image manipulation and GUI operation, [scikit-image](https://scikit-image.org/) for filtering and measuring, [scikit-learn](https://scikit-learn.org/stable/) for k-means segmentation, [shapely](https://shapely.readthedocs.io/en/latest/) for geometry operations, along with a number of standard Python libraries including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [matplotlib](https://matplotlib.org/), and [tkinter](https://wiki.python.org/moin/TkInter).
 
-3. A folder `example_data` with two example images: one orthorectified and the other not
-
-4. A folder `docs` containing this manual
-
-
-## For the Pros
-For those familiar with Python, the best way to install PebbleCounts is by simply downloading the [GitHub repository](https://github.com/bpurinton/PebbleCounts), navigating to the PebbleCounts folder at the command line, ensuring all Python dependencies are installed (see the `environment.yml` file) and getting started by skipping ahead to **Command-line Options**:
-
-## For Newbies
-For newcomers to Python, no worries! Installation should be a cinch on most machines and I'll describe it here for Windows. First of all you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)).
-
-Download either the 32- or 64-bit installer of Python 3.x then follow the installation instructions. It's recommend to add Miniconda to the system `PATH` variable when prompted. PebbleCounts has a number of important dependencies including [gdal](https://www.gdal.org/) for georeferenced raster manipulation, [openCV](https://opencv.org/) for image manipulation and GUI operation, [scikit-image](https://scikit-image.org/) for filtering and measuring, [scikit-learn](https://scikit-learn.org/stable/) for k-means segmentation, along with a number of standard Python libraries including [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org/), [matplotlib](https://matplotlib.org/), and [tkinter](https://wiki.python.org/moin/TkInter).
-
+### For Windows
 Once you've got `conda` commands installed, you can open a command-line terminal and create a conda environment with:
 ```
-conda create --name pebblecounts python=3.6 opencv \
+conda create --name pebblecounts python=3.6 opencv shapely \
    scikit-image scikit-learn numpy gdal scipy matplotlib tk
 ```
-Or just use the environment .yml file provided with:
+Or just use the `.yml` file provided with:
 ```
 conda env create -f environment.yml
 ```
@@ -77,15 +65,39 @@ Deactivate the environment to exit anytime by:
 deactivate
 ```
 
-## For Mac and Linux Users
-Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `source` to the `activate` and `deactivate` commands above). Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/). The shell script `install_openCV_env_ubuntu18.sh` should allow for a clean install of an openCV inclusive `pebblecounts` conda environment on an Ubuntu v.18 system.
+### For Mac and Linux Users
+Those using Mac OS or Linux shouldn't have much trouble modifying the above commands slightly (just add a leading `conda` to the `activate` and `deactivate` commands above). Also we need to install `opencv` separately from within the virtual environment using the `pip` package manager.
+
+Similar to the above, once you have `conda` installed we create the virtual environment:
+```
+conda create --name pebblecounts python=3.6 shapely \
+   scikit-image scikit-learn numpy gdal scipy matplotlib tk
+```
+and once installation is complete (and assuming no errors during the install) activate the new environment by:
+```
+conda activate pebblecounts
+```
+We've left out the opencv package which must be installed with the following `pip` command in the activated `pebblecounts` environment:
+```
+pip install opencv-python
+```
+Deactivate the environment to exit anytime by:
+```
+conda deactivate
+```
+
+#### Issues with opencv on Mac and Linux
+Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/).
+
 
 # Overview
+
+## PebbleCounts: K-means with Manual Selection (KMS)
 PebbleCounts can be summed up in the flow chart shown in Figure \ref{Fig:pebblecounts_flowchart}. To briefly summarize, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively mask shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum grain size provided by the user. This multi-scale approach allows the algorithm to "burrow" through the grain size distribution beginning by removing the largest grains and ending on the smallest, with the medium sizes in between. At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential separate pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the below sections for the example). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
 
 ![Flowchart  of  PebbleCounts.  The  boxes  are  user  supplied  input  or  output  from  the  algorithm.  Dashed  lines  indicate  a  user  input  step  during  processing,  either  entering  and  checking  values  or  clicking.\label{Fig:pebblecounts_flowchart}](figs/pebblecounts_flowchart.png)
 
-# Detailed Processing Steps
+### KMS Detailed Processing Steps
 Below is an in-depth description of each processing step applied by PebbleCounts. For those wishing to proceed with counting without the full story, go ahead to the **Command-line Options** and then the **Step-by-Step Example** sections below! For the nitty-gritty breakdown, follow along:
 
 1. PebbleCounts begins with the input of georeferenced ortho or simple top-down imagery at the command-line along with a number of variable flags. Most of the 13 variables do not need modification, but see their descriptions below to decide.
@@ -105,7 +117,17 @@ Below is an in-depth description of each processing step applied by PebbleCounts
 15. Following all windowing, the resulting average color for each grain (in hue and saturation) is again passed to a k-means clustering step, however, the number of clusters is user supplied in this case as the number of expected uniquely colored lithologies present in the image. This provides another numbered label for each grain with the estimated lithology. For uniform lithology this value should be 1.
 16. The results of each grain are output as a comma separated value text file. The measurements are given in pixel and metric units by multiplying the pixel amounts by the image resolution in meters per pixel. In case of a UTM projected georeferenced image, the UTM X (Easting) and Y (Northing) coordinates of the grain centroid are also provided. Additionally, from the color mask a fractional percentage of the image that was masked by the HSV range is provided in the output file (e.g., the percentage sand) along with the fractional percentage of the image that was not measured (so combined shadows and grains not identified by PebbleCounts).
 
-# Command-line Options
+## PebbleCountsAuto: Automatic with Image Filtering (AIF)
+PebbleCountsAuto can be summed up in the flow chart shown in Figure \ref{Fig:pebblecounts_auto_flowchart}.
+
+
+![Flowchart  of  PebbleCountsAuto.  The  boxes  are  user  supplied  input  or  output  from  the  algorithm.  Dashed  lines  indicate  a  user  input  step  during  processing,  either  entering  and  checking  values  or  clicking.\label{Fig:pebblecounts_auto_flowchart}](figs/pebblecounts_auto_flowchart.png)
+
+
+### AIF Detailed Processing Steps
+TODO!
+
+# Running PebbleCounts and PebbleCountsAuto
 Great you've got it installed! Hopefully that is, we're about to find out! The first step to running the software is navigating to the directory where the three scripts live. On Windows that might look like:
 ```
 cd C:\Users\YourName\PebbleCounts
@@ -147,9 +169,9 @@ average resolution in mm/pixel = 0.1732
 ```
 And I could then pass this resolution (`0.1732`) to the `PebbleCounts.py` script.
 
-**Note on Shot Height:** If you aren't sure exactly what height the image was shot from, use an approximate value. Even for differences of up to 1 m in shot height the ground resolution for most cameras will change by less than 0.2 mm, and thus have a negligible effect on the resulting grain-sizes measured.
+**Note on Shot Height:** If you aren't sure exactly what height the image was shot from, use an approximate value. Even for differences of up to 1 m in shot height the ground resolution for most cameras will change by less than 0.2 mm, and thus have a negligible effect on the resulting grain sizes measured.
 
-## PebbleCounts
+## PebbleCounts (KMS)
 The code can be run from the command-line with
 ```
 python PebbleCounts.py ...
@@ -237,8 +259,10 @@ Here's a bit more detail on some of the less obvious inputs to clarify:
 * `-bilat_filt_szs` is the square window size to apply for [bilateral filtering](https://docs.opencv.org/3.1.0/d4/d13/tutorial_py_filtering.html), with the aim of further smoothing the image while preserving interstices between the grains. The size of this filter window should be reduced with the windowing scale. The default values are also good here.
 * `-tophat_th`, `-sobel_th`, and `-canny_sig` are the [tophat](http://scikit-image.org/docs/dev/api/skimage.morphology.html#skimage.morphology.black_tophat) filter percentile threshold, [Sobel](http://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.sobel) filter percentile threshold, and [Canny](http://scikit-image.org/docs/dev/auto_examples/edges/plot_canny.html) edge detection smoothing standard deviation. These are the values used on edge detection from the gray-scale image and are probably good at the default value. The same value is used for each scale.
 
+## PebbleCountsAuto (AIF)
+TODO!
 
-# Step-by-Step Example
+# PebbleCounts (KMS) Step-by-Step Example
 
 1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands (**Note:** While all of the default arguments can be modified at the command line, it is recommended to stick mostly to the default values. In most cases, only the expected lithologies and maximum expected grain-size need to be modified for different images given 0.8-1.2 mm/pixel imagery. For < 0.8 mm/pixel resolution imagery, it is necessary to double the `-min_sz_factors` default values and to use a `-cutoff` value of 25-pixels.):
 
@@ -319,3 +343,6 @@ PebbleCounts saves out a few outputs in the same folder that the image resides:
 The results .csv has an entry for each grain (Figure \ref{Fig:output_csv}) showing the fraction of the scene not measured (combined background shadow and unmeasured grains) the fraction of the scene that was selected by the color mask as background color (e.g., sand) and each grains' characteristics including a- and b-axis of the fit ellipse in pixels and in meters, the area covered by the grain mask in pixels and square meters, the orientation of the fit ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in cartesian coordinates. If the input imagery is georeferenced the UTM Northing (Y) and Easting (X) coordinates of the pebble's centroid are be provided.
 
 ![Example .csv file output by PebbleCounts for a georeferenced image. *perc. not meas.* is the fractional percentage of the image that was either shadows or not measured by PebbleCounts and *perc. background color* is the fractional percentage of the image that was masked during interactive HSV color selection (e.g., for sand).\label{Fig:output_csv}](figs/output_csv.png)
+
+
+# PebbleCountsAuto (AIF) Example
