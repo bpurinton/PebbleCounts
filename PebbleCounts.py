@@ -44,7 +44,7 @@ parser.add_argument("-input_resolution", type=float,
 parser.add_argument("-subset", type=str,
                     help="'y' to interactively subset the image, 'n' to use entire image. DEFAULT='n'", default='n')
 parser.add_argument("-sand_mask", type=str,
-                    help="The name with the path to folder and extension to a sand mask if one already exists.")
+                    help="The name with the path to folder and extension to a sand mask GeoTiff if one already exists.")
 parser.add_argument("-otsu_threshold", type=int,
                     help="Percentage of Otsu value to threshold by. Supplied to skip the interactive thresholding step.", default=None)
 parser.add_argument("-maxGS", type=float,

@@ -44,7 +44,7 @@ parser.add_argument("-input_resolution", type=float,
 parser.add_argument("-subset", type=str,
                     help="'y' to interactively subset the image, 'n' to use entire image. DEFAULT='n'", default='n')
 parser.add_argument("-sand_mask", type=str,
-                    help="The name with the path to folder and extension to a sand mask if one already exists.")
+                    help="The name with the path to folder and extension to a sand mask GeoTiff if one already exists.")
 parser.add_argument("-otsu_threshold", type=int,
                     help="Percentage of Otsu value to threshold by. Supplied to skip the interactive thresholding step.", default=None)
 parser.add_argument("-cutoff", type=int,
@@ -54,7 +54,7 @@ parser.add_argument("-percent_overlap", type=int,
 parser.add_argument("-misfit_threshold", type=int,
                     help="Maximum allowable percentage misfit between ellipse and grain mask for filtering suspect grains. DEFAULT=30", default=30)
 parser.add_argument("-min_size_threshold", type=int,
-                    help="Minimum area of grain (in pixels) to be considered in count. Used to clean the grain mask. 10 is good for ~1 mm/pixel images, 40 for < 0.8 mm/pixel. DEFAULT=10", default=10)
+                    help="Minimum area of grain (in pixels) to be considered in count. Used to clean the grain mask. 10 is good for ~1 mm/pixel images, 20 for < 0.8 mm/pixel. DEFAULT=10", default=10)
 parser.add_argument("-first_nl_denoise", type=int,
                     help="Initial denoising non-local means chromaticity filtering strength. DEFAULT=5", default=5)
 parser.add_argument("-tophat_th", type=float,
