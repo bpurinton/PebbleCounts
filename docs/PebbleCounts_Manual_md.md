@@ -14,7 +14,7 @@ logo-width: 360
 ---
 
 # Introduction
-This guide will walk you through the installation and running of PebbleCounts at the command-line. PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. It is a semi-automated  program in that edge detection and k-means segmentation are performed automatically, but the user must interactively hand-click the well outlined pebbles and ignore the bad results. The software is extremely useful for area-by-number pebble counts without painstaking field work or the disruption of the natural environment via gravel removal. For the detailed background and validation, check out the publication accompanying the algorithm:
+This guide will walk you through the installation and running of PebbleCounts at the command-line. PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. It is a semi-automated  program in that edge detection and k-means segmentation are performed automatically, but the user must interactively hand-click the well outlined pebbles and ignore the bad results. For the detailed background and validation (in addition to the suggested use), check out the open-source publication accompanying the algorithm:
 
 **PUBLICATION DOI.**
 
@@ -40,7 +40,7 @@ Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipe
 In addition to the manual-clicking version of PebbleCounts based on k-means segmentation, we have also developed and included an automated version that has higher uncertainties. We recommend using PebbleCounts in a subset of data to validate larger areas run in PebbleCountsAuto. The description of the automatic algorithm and uncertainties can be found in the publication (**PUBLICATION DOI TO BE ADDED**).
 
 # Installation
-The first step is downloading the GitHub repository somewhere on your computer, and unzipping it. There you will find the Python algorithms (e.g., `PebbleCounts.py`), an `environment.yml` file containing the Python dependencies for quick installs with `conda` on Windows, a folder `example_data` with two example images one orthorectified and the other raw, and a folder `docs` containing the [full manual](docs/PebbleCounts_Manual.pdf).
+The first step is downloading the GitHub repository somewhere on your computer, and unzipping it. There you will find the Python algorithms (e.g., `PebbleCounts.py`), an `environment.yml` file containing the Python dependencies for quick installs with `conda` on Windows, a folder `example_data` with two example images one orthorectified and the other raw, and a folder `docs` containing this manual.
 
 For newcomers to Python, no worries! Installation should be a cinch on most machines. First, you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). Download either the 32- or 64-bit Miniconda installer of Python 3.x then follow the instructions (either using the `.exe` file for Windows, `.pkg` for Mac, or `bash installer` for Linux). Add Miniconda to the system `PATH` variable when prompted.
 
@@ -89,45 +89,54 @@ conda deactivate
 #### Issues with opencv on Mac and Linux
 Note that installing openCV and getting it to function properly can be a pain sometimes, especially in the case of Linux. In that case it is recommended to find some instructions for installing openCV's Python API for your specific Linux operating system [online](https://www.pyimagesearch.com/2018/05/28/ubuntu-18-04-how-to-install-opencv/).
 
-
 # Overview
 
 ## PebbleCounts: K-means with Manual Selection (KMS)
-PebbleCounts can be summed up in the flow chart shown in Figure \ref{Fig:pebblecounts_flowchart}. To briefly summarize, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively mask shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum grain size provided by the user. This multi-scale approach allows the algorithm to "burrow" through the grain size distribution beginning by removing the largest grains and ending on the smallest, with the medium sizes in between. At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential separate pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see the below sections for the example). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
+PebbleCounts using the K-means with Manual Selection (KMS) approach can be summed up in the flow chart shown in Figure \ref{Fig:pebblecounts_flowchart}. To briefly summarize, PebbleCounts pre-processes the image by allowing the user to subset the full scene, then interactively mask shadows (interstices between grains) and color (for instance sand). Following this, PebbleCounts windows the scene at three different scales with the window size determined by the input resolution and expected maximum longest-axis (a-axis) grain size provided by the user. This multi-scale approach allows the algorithm to "burrow" through the grain-size distribution beginning by removing the largest grains and ending on the smallest, with the medium sizes in between. At each window the algorithm filters the image, detects edges, and employs [k-means segmentation](https://scikit-learn.org/stable/modules/clustering.html#k-means) to get an approximate cleaned-up mask of potential separate pebbles. The window is then shown with the mask overlain and the user is able to click the **good** looking grains and leave out the **bad** ones (see Figure \ref{Fig:example_clicking}). These grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation. This process is iterated through each window and the output from the counting is provided as a comma separated value (.csv) file for user manipulation.
 
 ![Flowchart  of  PebbleCounts.  The  boxes  are  user  supplied  input  or  output  from  the  algorithm.  Dashed  lines  indicate  a  user  input  step  during  processing,  either  entering  and  checking  values  or  clicking.\label{Fig:pebblecounts_flowchart}](figs/pebblecounts_flowchart.png)
 
 ### KMS Detailed Processing Steps
 Below is an in-depth description of each processing step applied by PebbleCounts. For those wishing to proceed with counting without the full story, go ahead to the **Command-line Options** and then the **Step-by-Step Example** sections below! For the nitty-gritty breakdown, follow along:
 
-1. PebbleCounts begins with the input of georeferenced ortho or simple top-down imagery at the command-line along with a number of variable flags. Most of the 13 variables do not need modification, but see their descriptions below to decide.
-2. The image is loaded and the user is given the opportunity to subset with a click-and-drag bounding rectangle.
+1. PebbleCounts begins with the input of georeferenced ortho or simple top-down imagery at the command-line along with a number of variable flags. Most of the 20 variables do not need modification, but see their descriptions below to decide.
+2. The image is loaded (and possibly subset with a click-and-drag rectangle) and initially denoised with a strong [non-local means denoising](https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html) filter to smooth color.
 3. The [Otsu](https://en.wikipedia.org/wiki/Otsu%27s_method) value for gray-scale thresholding is assessed and the user is asked to supply a percentage of this Otsu value for masking out shadows between grains. The resulting mask is then checked by the user and re-evaluated with a new percentage value, for instance if the value is too high thus causing some of the darker grains to also be masked.
-4. The image is displayed and the user can click on a color that should be masked (e.g., uniform colored brown sand or vegetation patches). The masking is accomplished via a narrow range applied to the [HSV](https://en.wikipedia.org/wiki/HSL_and_HSV) color-space around the clicked pixel. The user has the opportunity to accept or reject the additional mask and add more color masks if the full range of interest has not been included. Together, the shadow and color mask provide an initial segmentation of the grains in the image.
-5. Following these pre-processing steps, the image and shadow/color mask is windowed at three different scales corresponding to approximately 10, 2, and 0.5 times the longest expected grain in the image. Each of these windows is passed through the following steps.
+4. The image is displayed and the user can click on a color that should be masked (e.g., uniform colored brown sand or vegetation patches). The masking is accomplished via a narrow range applied to the [HSV](https://en.wikipedia.org/wiki/HSL_and_HSV) color-space around the clicked pixel. The user has the opportunity to accept or reject the additional mask and add more color masks if the full range of interest has not been included. For georeferenced imagery, a binary GeoTiff and a vector polygon shapefile of the sand mask are output at this step. Together, the shadow and color mask provide an initial segmentation of the grains in the image.
+5. Following these pre-processing steps, the image and shadow/color mask are windowed at three different scales corresponding to approximately 10, 3, and 2 times the longest expected grain in the image. Each of these windows is passed through steps 6-14.
 6. [Non-local means denoising](https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html) on the [CIELab](https://en.wikipedia.org/wiki/CIELAB_color_space) converted image with the color (chromaticity) filtered but the brightness (luminance) un-altered. This provides a more uniform color for mottled grains.
-7. [Bilateral filtering](https://docs.opencv.org/3.1.0/d4/d13/tutorial_py_filtering.html) on the CIELab chromaticity bands. This filtering technique reduces noise in an image while preserving high gradient edges between grains.
+7. [Bilateral filtering](https://docs.opencv.org/3.1.0/d4/d13/tutorial_py_filtering.html) on the CIELab chromaticity bands. This filtering technique reduces noise in an image while preserving high-gradient edges between grains.
 8. Edge detection steps applied to the original gray-scale image. This includes [black top-hat](http://scikit-image.org/docs/dev/api/skimage.morphology.html#skimage.morphology.black_tophat) and [Sobel](http://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.sobel) filtering, after which a suggested threshold of 90% is applied to only extract the strongest edges, and [Canny](http://scikit-image.org/docs/dev/auto_examples/edges/plot_canny.html) edge detection. At each of these steps the associated edge mask is feature-AND ([see textbook by John C. Russ](https://www.amazon.com/Image-Processing-Handbook-Sixth/dp/1439840458)) operated with the shadow/color mask to add additional segmentation details where there is some overlap to definite inter-granular interstices, while avoiding over segmentation caused by intra-granular noise.
 9. Masked pixels are eliminated from the analysis and an _N_\*4 dimensional vector (_N_ is the number of pixels) is formed with the smoothed CIELab _a\*_ (green-red) and _b\*_ (blue-yellow) chromaticity bands and the _X_ and _Y_ coordinate of the pixel in image space. The chromaticity (_a\*_ and _b\*_) is rescaled between 0 and 1 and the _X_ and _Y_ is rescaled by a user supplied scaling factor suggested at 0.5. This allows the color information to have a larger influence on clustering in the k-means step, thus avoiding some over-segmentation of larger grains.
 10. This _N_\*4, rescaled vector is passed to the k-means algorithm, which iteratively clusters the pixels by color and spatial location and checks the overall inertia of the clusters then repeats the clustering with centers shifted until the improvement in subsequent inertia is less than a threshold fractional percentage. This threshold improvement is suggested to be 0.01 for the first, large scale and 0.1 for the medium and fine scale.
-11. When the improvement threshold is met, the vector is transformed back into image space, maintaining the k-means labels. Each of these labels is then separately selected and cleaned up via a combination of [binary erosion, dilation, removal of small objects, and clearing of border-touching elements](http://scikit-image.org/docs/dev/api/skimage.morphology.html). The cleaned label masks are then combined into a final potential grain mask.
+11. When the improvement threshold is met, the vector is transformed back into image space, maintaining the k-means labels. Each of these labels is then separately selected and cleaned up via a combination of [binary erosion, dilation, removal of small objects, and clearing of border-touching elements](http://scikit-image.org/docs/dev/api/skimage.morphology.html). Any labels below the lower cutoff value (e.g., 20-pixel b-axis length) are eliminated. The cleaned label masks are then combined into a final potential grain mask.
 12. The potential grain mask is now displayed over the original RGB color image and the user is asked to click labels that contain single, well-defined grains. Here it is suggested that any grain mask that contains the majority of the grain (particularly the edges of the grain) is selected, even if the k-means segmentation led to jagged edges and over-segmentation within the grain. This is because the final ellipse fitting ignores these holes and fits to the largest area covered by the mask label.
-13. Each of the labels with a user-selected point clicked inside of it is analyzed for [region properties](http://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) to extract the grain centroid, average hue and saturation color from HSV space, area of the grain in number of pixels, and the following parameters of an ellipse fit to the region: minor and major axis length and orientation of the ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in Cartesian coordinates.
+13. Each of the labels with a user-selected point clicked inside of it is analyzed for [region properties](http://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) to extract the grain centroid, area, and the following parameters of an ellipse fit to the region: minor and major axis length, area of the ellipse (for providing a misfit value against the area of the grain), and orientation of the ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in Cartesian coordinates.
 14. The clicked regions are then added to the shadow/color mask and the processing is repeated from step 6 on the next window or beginning at the next of the three scales.
-15. Following all windowing, the resulting average color for each grain (in hue and saturation) is again passed to a k-means clustering step, however, the number of clusters is user supplied in this case as the number of expected uniquely colored lithologies present in the image. This provides another numbered label for each grain with the estimated lithology. For uniform lithology this value should be 1.
-16. The results of each grain are output as a comma separated value text file. The measurements are given in pixel and metric units by multiplying the pixel amounts by the image resolution in meters per pixel. In case of a UTM projected georeferenced image, the UTM X (Easting) and Y (Northing) coordinates of the grain centroid are also provided. Additionally, from the color mask a fractional percentage of the image that was masked by the HSV range is provided in the output file (e.g., the percentage sand) along with the fractional percentage of the image that was not measured (so combined shadows and grains not identified by PebbleCounts).
+16. Following all windowing, the results of each grain are output as a comma separated value text file. The measurements are given in pixel and metric units by multiplying the pixel amounts by the image resolution in meters per pixel. In case of a UTM projected georeferenced image, the UTM X (Easting) and Y (Northing) coordinates of the grain centroid are also provided. Additionally, from the color mask a fractional percentage of the image that was masked by the HSV range is provided in the output file (e.g., the percentage sand) along with the fractional percentage of the image that was not measured (so combined shadows and grains not identified by PebbleCounts).
 
 ## PebbleCountsAuto: Automatic with Image Filtering (AIF)
-PebbleCountsAuto can be summed up in the flow chart shown in Figure \ref{Fig:pebblecounts_auto_flowchart}.
-
+PebbleCountsAuto using the Automatic with Image Filtering (AIF) approach can be summed up in the flow chart shown in Figure \ref{Fig:pebblecounts_auto_flowchart}. To briefly summarize, PebbleCountsAuto pre-processes the image by allowing the user to subset the full scene, then interactively mask shadows (interstices between grains) and color (for instance sand). Following this, the algorithm detects edges, cleans the mask, and filters suspect grains. The remaining grains are then measured via ellipse fitting to retrieve the long- and short-axis and orientation and the output from the counting is provided as a .csv file for user manipulation.
 
 ![Flowchart  of  PebbleCountsAuto.  The  boxes  are  user  supplied  input  or  output  from  the  algorithm.  Dashed  lines  indicate  a  user  input  step  during  processing,  either  entering  and  checking  values  or  clicking.\label{Fig:pebblecounts_auto_flowchart}](figs/pebblecounts_auto_flowchart.png)
 
-
 ### AIF Detailed Processing Steps
-TODO!
+Below is an in-depth description of each processing step applied by PebbleCountsAuto:
 
-# Running PebbleCounts and PebbleCountsAuto
+1. PebbleCountsAuto begins with the input of georeferenced ortho or simple top-down imagery at the command-line along with a number of variable flags. Most of the 15 variables do not need modification, but see their descriptions below to decide.
+2. The image is loaded (and possibly subset with a click-and-drag rectangle) and initially denoised with a strong [non-local means denoising](https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html) filter to smooth color.
+3. The [Otsu](https://en.wikipedia.org/wiki/Otsu%27s_method) value for gray-scale thresholding is assessed and the user is asked to supply a percentage of this Otsu value for masking out shadows between grains. The resulting mask is then checked by the user and re-evaluated with a new percentage value, for instance if the value is too high thus causing some of the darker grains to also be masked.
+4. The image is displayed and the user can click on a color that should be masked (e.g., uniform colored brown sand or vegetation patches). The masking is accomplished via a narrow range applied to the [HSV](https://en.wikipedia.org/wiki/HSL_and_HSV) color-space around the clicked pixel. The user has the opportunity to accept or reject the additional mask and add more color masks if the full range of interest has not been included. For georeferenced imagery, a binary GeoTiff and a vector polygon shapefile of the sand mask are output at this step. Together, the shadow and color mask provide an initial segmentation of the grains in the image.
+5. Following these pre-processing steps, edge detection steps are applied to the original gray-scale image. This includes [black top-hat](http://scikit-image.org/docs/dev/api/skimage.morphology.html#skimage.morphology.black_tophat) and [Sobel](http://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.sobel) filtering, after which a suggested threshold of 90% is applied to only extract the strongest edges, and [Canny](http://scikit-image.org/docs/dev/auto_examples/edges/plot_canny.html) edge detection. At each of these steps the associated edge mask is feature-AND ([see textbook by John C. Russ](https://www.amazon.com/Image-Processing-Handbook-Sixth/dp/1439840458)) operated with the shadow/color mask to add additional segmentation details where there is some overlap to definite inter-granular interstices, while avoiding over segmentation caused by intra-granular noise.
+6. The resulting potential grain labels are cleaned up via a combination of [binary erosion, dilation, removal of small objects, and clearing of border-touching elements](http://scikit-image.org/docs/dev/api/skimage.morphology.html). Any labels below the lower cutoff value (e.g., 20-pixel b-axis length) are eliminated.
+7. Each of the remaining labels are analyzed for [region properties](http://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops) to extract the grain centroid, area, and the following parameters of an ellipse fit to the region: minor and major axis length, area of the ellipse (for providing a misfit value against the area of the grain), and orientation of the ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in Cartesian coordinates.
+8. The grains are then filtered to remove suspect grains in a three step process, where a yes answer to any step eliminates the grain:
+  * (A) Does the centroid fall within another ellipse?
+  * (B) Does the ellipse overlap with any neighboring ellipses above some threshold? (15% works well)
+  * (C) Is the percent misfit (ellipse area vs. grain-mask area) above some threshold? (30% works well)
+9. Following filtering, the results of each grain are output as a comma separated value text file. The measurements are given in pixel and metric units by multiplying the pixel amounts by the image resolution in meters per pixel. In case of a UTM projected georeferenced image, the UTM X (Easting) and Y (Northing) coordinates of the grain centroid are also provided. Additionally, from the color mask a fractional percentage of the image that was masked by the HSV range is provided in the output file (e.g., the percentage sand) along with the fractional percentage of the image that was not measured (so combined shadows and grains not identified by PebbleCountsAuto).
+
+# Command-line Programs and Variables
 Great you've got it installed! Hopefully that is, we're about to find out! The first step to running the software is navigating to the directory where the three scripts live. On Windows that might look like:
 ```
 cd C:\Users\YourName\PebbleCounts
@@ -179,48 +188,47 @@ python PebbleCounts.py ...
 Parameters to be provided can be listed with ```python PebbleCounts.py -h```. Here they all are:
 ```
 usage: PebbleCounts.py [-h] [-im IM] [-ortho ORTHO]
-                       [-input_resolution INPUT_RESOLUTION]
-                       [-lithologies LITHOLOGIES] [-maxGS MAXGS]
-                       [-cutoff CUTOFF]
+                       [-input_resolution INPUT_RESOLUTION] [-subset SUBSET]
+                       [-sand_mask SAND_MASK] [-otsu_threshold OTSU_THRESHOLD]
+                       [-maxGS MAXGS] [-cutoff CUTOFF]
                        [-min_sz_factors MIN_SZ_FACTORS [MIN_SZ_FACTORS ...]]
                        [-win_sz_factors WIN_SZ_FACTORS [WIN_SZ_FACTORS ...]]
                        [-improvement_ths IMPROVEMENT_THS [IMPROVEMENT_THS ...]]
-                       [-coordinate_scales COORDINATE_SCALES [COORDINATE_SCALES ...]]
+                       [-coordinate_scales COORDINATE_SCALES [COORDINATE_SCALES...]]
                        [-overlaps OVERLAPS [OVERLAPS ...]]
-                       [-nl_means_chroma_filts NL_MEANS_CHROMA_FILTS [NL_MEANS_CHROMA_FILTS ...]]
+                       [-first_nl_denoise FIRST_NL_DENOISE]
+                       [-nl_means_chroma_filts NL_MEANS_CHROMA_FILTS \
+                       [NL_MEANS_CHROMA_FILTS ...]]
                        [-bilat_filt_szs BILAT_FILT_SZS [BILAT_FILT_SZS ...]]
                        [-tophat_th TOPHAT_TH] [-sobel_th SOBEL_TH]
                        [-canny_sig CANNY_SIG] [-resize RESIZE]
 
 optional arguments:
   -h, --help            show this help message and exit
-  -im IM                The image to use including the full path and
+  -im IM                The image to use including the path to folder and
                         extension.
   -ortho ORTHO          'y' if geo-referenced ortho-image, 'n' if not. Supply
                         input resolution if 'n'.
   -input_resolution INPUT_RESOLUTION
                         If image is not ortho-image, input the calculated
                         resolution from calculate_camera_resolution.py
-  -lithologies LITHOLOGIES
-                        What is the expected number of lithologies with
-                        distinct colors? DEFAULT=1
+  -subset SUBSET        'y' to interactively subset the image, 'n' to use
+                        entire image. DEFAULT='n'
+  -sand_mask SAND_MASK  The name with the path to folder and extension to a
+                        sand mask GeoTiff if one already exists.
+  -otsu_threshold OTSU_THRESHOLD
+                        Percentage of Otsu value to threshold by. Supplied to
+                        skip the interactive thresholding step.
   -maxGS MAXGS          Maximum expected longest axis grain size in meters.
                         DEFAULT=0.3
   -cutoff CUTOFF        Cutoff factor (minimum b-axis length) in pixels for
-                        inclusion of pebble in final count. 10 is good for ~1
-                        mm/pixel images, 25 for < 0.8 mm/pixel. DEFAULT=10
+                        found pebbles. DEFAULT=20
   -min_sz_factors MIN_SZ_FACTORS [MIN_SZ_FACTORS ...]
                         Factors to multiply cutoff value by at each scale.
-                        Used to clean-up the masks for easier clicking. The
-                        default values are good for ~1 mm/pixel imagery but
-                        should be doubled for < 0.8 mm/pixel or halved for
-                        centimeter resolution imagery. DEFAULT=[100, 10, 2]
+                        DEFAULT=[50, 5, 1]
   -win_sz_factors WIN_SZ_FACTORS [WIN_SZ_FACTORS ...]
                         Factors to multiply maximum grain-size (in pixels) by
-                        at each scale. The default values are good for
-                        millimeter and sub-millimeter imagery, but should be
-                        doubled for coarser centimeter imagery. DEFAULT=[10,
-                        2, 1]
+                        at each scale. DEFAULT=[10, 3, 2]
   -improvement_ths IMPROVEMENT_THS [IMPROVEMENT_THS ...]
                         Improvement threshold values for each window scale
                         that tells k-means when to halt. DEFAULT=[0.01, 0.1,
@@ -231,9 +239,12 @@ optional arguments:
   -overlaps OVERLAPS [OVERLAPS ...]
                         Fraction of overlap between windows at the different
                         scales. DEFAULT=[0.5, 0.3, 0.1]
+  -first_nl_denoise FIRST_NL_DENOISE
+                        Initial denoising non-local means chromaticity
+                        filtering strength. DEFAULT=5
   -nl_means_chroma_filts NL_MEANS_CHROMA_FILTS [NL_MEANS_CHROMA_FILTS ...]
-                        Nonlocal means chromaticity filtering strength for the
-                        different scales. DEFAULT=[3, 2, 1]
+                        Non-local means chromaticity filtering strength for
+                        the different scales. DEFAULT=[3, 2, 1]
   -bilat_filt_szs BILAT_FILT_SZS [BILAT_FILT_SZS ...]
                         Size of bilateral filtering windows for the different
                         scales. DEFAULT=[9, 5, 3]
@@ -247,53 +258,114 @@ optional arguments:
                         DEFAULT=0.8
 ```
 
+## PebbleCountsAuto (AIF)
+The code can be run from the command-line with
+```
+python PebbleCountsAuto.py ...
+```
+Parameters to be provided can be listed with ```python PebbleCountsAuto.py -h```. Here they all are:
+```
+usage: PebbleCountsAuto.py [-h] [-im IM] [-ortho ORTHO]
+                           [-input_resolution INPUT_RESOLUTION]
+                           [-subset SUBSET] [-sand_mask SAND_MASK]
+                           [-otsu_threshold OTSU_THRESHOLD] [-cutoff CUTOFF]
+                           [-percent_overlap PERCENT_OVERLAP]
+                           [-misfit_threshold MISFIT_THRESHOLD]
+                           [-min_size_threshold MIN_SIZE_THRESHOLD]
+                           [-first_nl_denoise FIRST_NL_DENOISE]
+                           [-tophat_th TOPHAT_TH] [-sobel_th SOBEL_TH]
+                           [-canny_sig CANNY_SIG] [-resize RESIZE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -im IM                The image to use including the path to folder and
+                        extension.
+  -ortho ORTHO          'y' if geo-referenced ortho-image, 'n' if not. Supply
+                        input resolution if 'n'.
+  -input_resolution INPUT_RESOLUTION
+                        If image is not ortho-image, input the calculated
+                        resolution from calculate_camera_resolution.py
+  -subset SUBSET        'y' to interactively subset the image, 'n' to use
+                        entire image. DEFAULT='n'
+  -sand_mask SAND_MASK  The name with the path to folder and extension to a
+                        sand mask GeoTiff if one already exists.
+  -otsu_threshold OTSU_THRESHOLD
+                        Percentage of Otsu value to threshold by. Supplied to
+                        skip the interactive thresholding step.
+  -cutoff CUTOFF        Cutoff factor (minimum b-axis length) in pixels for
+                        found pebbles. DEFAULT=20
+  -percent_overlap PERCENT_OVERLAP
+                        Maximum allowable overalp percentage between
+                        neighboring ellipses for filtering suspect grains.
+                        DEFAULT=15
+  -misfit_threshold MISFIT_THRESHOLD
+                        Maximum allowable percentage misfit between ellipse
+                        and grain mask for filtering suspect grains.
+                        DEFAULT=30
+  -min_size_threshold MIN_SIZE_THRESHOLD
+                        Minimum area of grain (in pixels) to be considered in
+                        count. Used to clean the grain mask. 10 is good for ~1
+                        mm/pixel images, 20 for < 0.8 mm/pixel. DEFAULT=10
+  -first_nl_denoise FIRST_NL_DENOISE
+                        Initial denoising non-local means chromaticity
+                        filtering strength. DEFAULT=5
+  -tophat_th TOPHAT_TH  Top percentile threshold to take from tophat filter
+                        for edge detection. DEFAULT=0.9
+  -sobel_th SOBEL_TH    Top percentile threshold to take from sobel filter for
+                        edge detection. DEFAULT=0.9
+  -canny_sig CANNY_SIG  Canny filtering sigma value for edge detection.
+                        DEFAULT=2
+  -resize RESIZE        Value to resize windows by should be between 0 and 1.
+                        DEFAULT=0.8
+```
+
+## Detail On Some PebbleCounts and PebbleCountsAuto Variables
 Here's a bit more detail on some of the less obvious inputs to clarify:
 
-* `-resize` controls the pop-up window size for the GUI. If you notice the window is too small to see the grains then use a high value like 0.9, but if the image is partially off-screen you should try lowering the value to around 0.8.
-* `-lithologies` is the expected number of different rock types in the image with distinct coloration differences. It defaults to 1, meaning the lithology is uniform or the color differences between lithologies are minimal and therefore difficult to discern from the image alone.
-* `-maxGS` is the expected size in meters of the largest rock in the image based on some field knowledge. This value is used during the windowing to set the appropriate sizes at the three scales in conjunction with the `-win_sz_factors` input.
-* `-cutoff` is the algorithm's lower limit on b-axis measurement given in pixels. The default value of 10 is what we found to be reliable for accurate distribution measurement using ~1 mm/pixel imagery. A value of 25-pixels is more appropriate for higher resolutions (e.g., < 0.8 mm/pixel). This value is also used by the `-min_sz_factors` input to cleanup the mask at each of the three window scales and should also be scaled depending on the imagery resolution (sub-mm, mm, cm).
+* `-subset` allows the user to run or ignore the interactive subsetting step by a click-and-drag rectangle.
+* `-sand_mask` allows the user to input a binary GeoTiff sand mask that already exists for the image, as output by a previous run of `PebbleCounts.py` or `PebbleCountsAuto.py`, to skip the interactive step.
+* `-otsu_threshold` allows the user to input a percentage of the Otsu value to use for shadow thresholding to skip the interactive step.
+* `-resize` controls the pop-up window size for the GUI. If you notice the window is too small to see the grains then use a high value like 0.9, but if the image is partially off-screen you should try lowering the value to around 0.7.
+* `-maxGS` is the expected size in meters of longest axis (a-axis) of the largest pebble in the image based on some field knowledge (rounded up to the nearest 0.05 m). This value is used during the windowing to set the appropriate sizes at the three scales in conjunction with the `-win_sz_factors` input.
+* `-cutoff` is the algorithm's lower limit on b-axis measurement given in pixels. The default value of 20 is what we found to be reliable for accurate distribution measurement. This value is also used by the `-min_sz_factors` input to cleanup the mask at each of the three window scales.
 * `-improvement_ths` is the fractional percentage (from 0-1) that k-means uses to assess convergence and stopping. The default values are probably good here.
 * `-coordinate_scales` is the fractional percentage (from 0-1) to scale the x,y coordinates of each pixel compared with the color information in the k-means segmentation. Since we want to allow for anisotropic grains covering large areas if they have semi-uniform color, we want to scale the relative importance of pixel location by approximately 50% of the color, hence the default values of 0.5 at each scale.
-* `-nl_means_chroma_filts` is the level of chromaticity filtering to apply during [non-local means denoising](https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html), which should be reduced at each scale. Higher values lead to more smoothing of the image and a cartoonish appearance. The default values should again be good here.
+* `-nl_means_chroma_filts` is the level of chromaticity filtering to apply during [non-local means denoising](https://docs.opencv.org/3.4/d5/d69/tutorial_py_non_local_means.html), which should be reduced at each scale. Higher values lead to more smoothing of the image and a cartoonish appearance. The default values should again be good here. The `-first_nl_denoise` does the same filtering on the entire image as a first step and should be left high (default=5), unless the user notes over-smoothing in the image, in which case lower this value to 2 or 3.
 * `-bilat_filt_szs` is the square window size to apply for [bilateral filtering](https://docs.opencv.org/3.1.0/d4/d13/tutorial_py_filtering.html), with the aim of further smoothing the image while preserving interstices between the grains. The size of this filter window should be reduced with the windowing scale. The default values are also good here.
 * `-tophat_th`, `-sobel_th`, and `-canny_sig` are the [tophat](http://scikit-image.org/docs/dev/api/skimage.morphology.html#skimage.morphology.black_tophat) filter percentile threshold, [Sobel](http://scikit-image.org/docs/dev/api/skimage.filters.html#skimage.filters.sobel) filter percentile threshold, and [Canny](http://scikit-image.org/docs/dev/auto_examples/edges/plot_canny.html) edge detection smoothing standard deviation. These are the values used on edge detection from the gray-scale image and are probably good at the default value. The same value is used for each scale.
 
-## PebbleCountsAuto (AIF)
-TODO!
-
 # PebbleCounts (KMS) Step-by-Step Example
 
-1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands (**Note:** While all of the default arguments can be modified at the command line, it is recommended to stick mostly to the default values. In most cases, only the expected lithologies and maximum expected grain-size need to be modified for different images given 0.8-1.2 mm/pixel imagery. For < 0.8 mm/pixel resolution imagery, it is necessary to double the `-min_sz_factors` default values and to use a `-cutoff` value of 25-pixels.):
+1. Depending on whether you're going to use an ortho or non-ortho image (and default or modified arguments) run one of the following commands (**Note:** While all of the default arguments can be modified at the command line, it is recommended to stick mostly to the default values. In most cases, only the maximum expected grain-size need to be modified for different images given 0.8-1.2 mm/pixel imagery. For < 0.8 mm/pixel resolution imagery, it may be necessary to double the `-min_sz_factors` default values to provide more clean clicking masks.):
 
   * **Ortho With Default Arguments:** (Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/))
 ```
 python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho y
 ```
-  * **Ortho With Modified Arguments:** (Increase number of expected lithologies and the maximum grain size)
+  * **Ortho With Modified Arguments:** (Increase maximum expected grain size.)
 ```
 python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho y \
-  -lithologies 3 -maxGS 0.4
+  -maxGS 0.4
 ```
 
-  * **Non-ortho Imagery With Default Arguments:** (Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**. Also, for < 0.8 mm/pixel imagery we recommend changing the lower cutoff to 25-pixels)
+  * **Non-ortho Imagery With Default Arguments:** (Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**.)
 ```
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
-  -input_resolution 0.63 -cutoff 25
+  -input_resolution 0.63
 ```
-  * **Non-ortho Imagery With Modified Arguments:** (Increase number of expected lithologies and decrease the maximum grain size. Also, since the resolution of this image is < 0.8 mm/pixel, I've doubled the default values for `-min_sz_factors`)
+  * **Non-ortho Imagery With Modified Arguments:** (Decrease maximum expected grain size. Also, since the resolution of this image is < 0.8 mm/pixel, I've doubled the default values for `-min_sz_factors`)
 ```
 python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
-  -input_resolution 0.63 -cutoff 25 -lithologies 2 -maxGS 0.2 -min_sz_factors 200 20 4
+  -input_resolution 0.63 -maxGS 0.2 -min_sz_factors 100 10 2
 ```
 
-2. Interactively subset the image by typing `y` or don't by typing `n`. If you do subset, click and drag a box on the pop-up window and press the *spacebar* to close the window again.
+2. If you do subset (`-subset` flag set to non-default `y` value), click and drag a box on the pop-up window and press the *spacebar* to close the window again.
 
-3. Input a percentage (0-100) of the [Otsu](https://en.wikipedia.org/wiki/Otsu%27s_method) shadow threshold value, then press enter. This will open a pop-up window displaying the image with the Otsu mask in white. On the keyboard press *r* to flash the original un-masked image, *y* to accept the mask and move on, and *n* to close the window and enter a new value (Figure \ref{Fig:otsu}).
+3. Input a percentage (0-100) of the [Otsu](https://en.wikipedia.org/wiki/Otsu%27s_method) shadow threshold value, then press enter. This will open a pop-up window displaying the image with the Otsu mask in white. On the keyboard press *r* to flash the original un-masked image, *y* to accept the mask and move on, and *n* to close the window and enter a new value (Figure \ref{Fig:otsu}). This step is skipped if a value for `-otsu_threshold` is provided in the initial command.
 
 ![Otsu thresholding of the image with an entered value 0-100. Press *r* to flash the original image, *y* to accept the mask, or *n* to try a different value.\label{Fig:otsu}](figs/otsu.PNG)
 
-4. Is there a color you want to mask out in the scene? Maybe the sand is a uniform color distinct from the pebbles. If so, then in the next step enter `y`, which will bring up another pop-up window. With the window active, you can press *q* to close it if you decide not to color mask and *r* to flash the original image (Figure \ref{Fig:color}). Once you click a point in the window with a color you'd like to mask a second pop-up will open displaying the result of applying a mask to this color. Press *y* to accept the mask or *n* to close it and try another click in the first window (Figure \ref{Fig:color}). Pressing *y* here will return you to the command prompt where you can finish color masking by entering `n` or adding additional color masks by entering `y`.
+4. Is there a color you want to mask out in the scene? Maybe the sand is a uniform color distinct from the pebbles. If so, then in the next step enter `y`, which will bring up another pop-up window. With the window active, you can press *q* to close it if you decide not to color mask and *r* to flash the original image (Figure \ref{Fig:color}). Once you click a point in the window with a color you'd like to mask a second pop-up will open displaying the result of applying a mask to this color. Press *y* to accept the mask or *n* to close it and try another click in the first window (Figure \ref{Fig:color}). Pressing *y* here will return you to the command prompt where you can finish color masking by entering `n` or adding additional color masks by entering `y`. This step is skipped if a path to a binary sand mask GeoTiff for `-sand_mask` is provided in the initial command.
 
 ![Color masking clicking window. Click on a color you want to mask to open a second window and check it. Press *q* to close window or *r* to flash the original image. Press *y* to accept or *n* to try a different click in the previous window.\label{Fig:color}](figs/color.PNG)
 
@@ -330,19 +402,46 @@ As shown in Figure \ref{Fig:example_clicking}, PebbleCounts does not provide a p
 
 2. Over-segmentation of single grains. Here it is up to the user to decide which part of the segmented grain (if any) to select. If the mask covers the majority of the grain despite some holes or shrinkage, then it is advisable to select the grain, since the final ellipse will be fit to the full region covered. Even if the center of a grain is entirely missing from the mask, if the ends of the grain are in the same mask then the fit ellipse will approximate the grain well.
 
+# PebbleCountsAuto (AIF) Step-by-Step Example
+The processing of PebbleCountsAuto follows the above steps 1-4, with the option to skip the Otsu and color masking steps using the `-otsu_threshold` and `-sand_mask` command-line variables. PebbleCountsAuto is otherwise entirely automated. Thus we only provide a few examples of command-line entries for using this algorithm:
 
-## Ouput
-PebbleCounts saves out a few outputs in the same folder that the image resides:
+* **Ortho With Default Arguments:** (Be sure to set the `-ortho` flag to `y` and the resolution will be automatically read by [gdal](https://www.gdal.org/))
+```
+python PebbleCountsAuto.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho y
+```
 
-* csv: `filename_PebbleCounts_CSV.csv`
+* **Ortho With Modified Arguments:** (Decrease Sobel and Tophat thresholds to provide more edge detection and decrease the misfit threshold to reduce potential bad measurements.)
+```
+python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho y \
+  -tophat_th 0.85 -sobel_th 0.85 -misfit_threshold 20
+```
 
-* label image (georeferenced if original is): `filename_PebbleCounts_LABELS.tif`
+* **Non-ortho Imagery With Default Arguments:** (Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**.)
+```
+python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
+  -input_resolution 0.63
+```
 
-* figure showing results: `filename_PebbleCounts_FIGURE.png`
+* **Non-ortho Imagery With Modified Arguments:** (Double the default value for `-min_size_threshold` since the resolution is < 0.8 mm/pixel. Also decrease the Sobel and Tophat thresholds to provide more edge detection given the higher resolution.)
+```
+python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
+  -input_resolution 0.63 -min_size_threshold 20 -tophat_th 0.85 -sobel_th 0.85
+```
 
-The results .csv has an entry for each grain (Figure \ref{Fig:output_csv}) showing the fraction of the scene not measured (combined background shadow and unmeasured grains) the fraction of the scene that was selected by the color mask as background color (e.g., sand) and each grains' characteristics including a- and b-axis of the fit ellipse in pixels and in meters, the area covered by the grain mask in pixels and square meters, the orientation of the fit ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in cartesian coordinates. If the input imagery is georeferenced the UTM Northing (Y) and Easting (X) coordinates of the pebble's centroid are be provided.
+# Ouput Files
+PebbleCounts(Auto) saves out a few outputs in the same folder that the image resides:
 
-![Example .csv file output by PebbleCounts for a georeferenced image. *perc. not meas.* is the fractional percentage of the image that was either shadows or not measured by PebbleCounts and *perc. background color* is the fractional percentage of the image that was masked during interactive HSV color selection (e.g., for sand).\label{Fig:output_csv}](figs/output_csv.png)
+* csv: `filename_PebbleCounts(Auto)_CSV.csv`
 
+* label image (georeferenced if original is): `filename_PebbleCounts(Auto)_LABELS.tif`
 
-# PebbleCountsAuto (AIF) Example
+* figure showing results: `filename_PebbleCounts(Auto)_FIGURE.png`
+
+And if the input is georeferenced imagery:
+
+* binary GeoTiff: `filename_PebbleCounts(Auto)_SandMask_TIFF.tif` 
+* and vector shapefile of the sand mask: `filename_PebbleCounts(Auto)_SandMask_SHP.shp`
+
+The results .csv has an entry for each grain (Figure \ref{Fig:output_csv}) showing the fraction of the scene not measured (combined background shadow and unmeasured grains) the fraction of the scene that was selected by the color mask as background color (e.g., sand) and each grains' characteristics including a- and b-axis of the fit ellipse in pixels and in meters, the area covered by the grain mask in pixels and square meters, the orientation of the fit ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in cartesian coordinates, the area of the ellipse, and the percent misfit between the ellipse and the grain given by the percentage difference in area. If the input imagery is georeferenced the UTM Northing (Y) and Easting (X) coordinates of the pebble's centroid are be provided.
+
+![Example .csv file output by algorithms for a georeferenced image. The *perc. not meas.* is the fractional percentage of the image that was either shadows or not measured and *perc. background color* is the fractional percentage of the image that was masked during interactive HSV color selection (e.g., for sand). Also, *perc. diff. area* is the percentage difference in area between the ellipse (*ellipse area (px)*) and grain (*area (px)*), or the approximate misfit of the ellipse.\label{Fig:output_csv}](figs/output_csv.png)

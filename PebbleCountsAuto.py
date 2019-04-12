@@ -35,35 +35,35 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # Get the arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("-im", type=str, 
+parser.add_argument("-im", type=str,
                     help="The image to use including the path to folder and extension.")
-parser.add_argument("-ortho", type=str, 
+parser.add_argument("-ortho", type=str,
                     help="'y' if geo-referenced ortho-image, 'n' if not. Supply input resolution if 'n'.")
-parser.add_argument("-input_resolution", type=float, 
+parser.add_argument("-input_resolution", type=float,
                     help="If image is not ortho-image, input the calculated resolution from calculate_camera_resolution.py")
-parser.add_argument("-subset", type=str, 
+parser.add_argument("-subset", type=str,
                     help="'y' to interactively subset the image, 'n' to use entire image. DEFAULT='n'", default='n')
-parser.add_argument("-sand_mask", type=str, 
-                    help="The name with the path to folder and extension to a sand mask if one already exists.")
-parser.add_argument("-otsu_threshold", type=int, 
+parser.add_argument("-sand_mask", type=str,
+                    help="The name with the path to folder and extension to a sand mask GeoTiff if one already exists.")
+parser.add_argument("-otsu_threshold", type=int,
                     help="Percentage of Otsu value to threshold by. Supplied to skip the interactive thresholding step.", default=None)
-parser.add_argument("-cutoff", type=int, 
-                    help="Cutoff factor (minimum b-axis length) in pixels for found pebbles. 10 is good for ~1 mm/pixel images, 29 for < 0.8 mm/pixel. DEFAULT=10", default=10)
-parser.add_argument("-percent_overlap", type=int, 
+parser.add_argument("-cutoff", type=int,
+                    help="Cutoff factor (minimum b-axis length) in pixels for found pebbles. DEFAULT=20", default=20)
+parser.add_argument("-percent_overlap", type=int,
                     help="Maximum allowable overalp percentage between neighboring ellipses for filtering suspect grains. DEFAULT=15", default=15)
-parser.add_argument("-misfit_threshold", type=int, 
+parser.add_argument("-misfit_threshold", type=int,
                     help="Maximum allowable percentage misfit between ellipse and grain mask for filtering suspect grains. DEFAULT=30", default=30)
-parser.add_argument("-min_size_threshold", type=int, 
-                    help="Minimum area of grain (in pixels) to be considered in count. Used to clean the grain mask. 10 is good for ~1 mm/pixel images, 40 for < 0.8 mm/pixel. DEFAULT=10", default=10)
-parser.add_argument("-first_nl_denoise", type=int, 
+parser.add_argument("-min_size_threshold", type=int,
+                    help="Minimum area of grain (in pixels) to be considered in count. Used to clean the grain mask. 10 is good for ~1 mm/pixel images, 20 for < 0.8 mm/pixel. DEFAULT=10", default=10)
+parser.add_argument("-first_nl_denoise", type=int,
                     help="Initial denoising non-local means chromaticity filtering strength. DEFAULT=5", default=5)
-parser.add_argument("-tophat_th", type=float, 
+parser.add_argument("-tophat_th", type=float,
                     help="Top percentile threshold to take from tophat filter for edge detection. DEFAULT=0.9", default=0.9)
-parser.add_argument("-sobel_th", type=float, 
+parser.add_argument("-sobel_th", type=float,
                     help="Top percentile threshold to take from sobel filter for edge detection. DEFAULT=0.9", default=0.9)
-parser.add_argument("-canny_sig", type=int, 
+parser.add_argument("-canny_sig", type=int,
                     help="Canny filtering sigma value for edge detection. DEFAULT=2", default=2)
-parser.add_argument("-resize", type=float, 
+parser.add_argument("-resize", type=float,
                     help="Value to resize windows by should be between 0 and 1. DEFAULT=0.8", default=0.8)
 args = parser.parse_args()
 
@@ -164,7 +164,7 @@ if subset=='y':
         cv2.startWindowThread()
         cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
         cv2.moveWindow(win_name, 0, 0)
-        cv2.resizeWindow(win_name, func.resizeWin(img, resize)[0], 
+        cv2.resizeWindow(win_name, func.resizeWin(img, resize)[0],
                          func.resizeWin(img, resize)[1])
         r = cv2.selectROI(win_name, img, False, False)
         if r[2] < 10 or r[3] < 10:
@@ -173,7 +173,7 @@ if subset=='y':
         else:
             cv2.destroyAllWindows()
             break
-    
+
 # read the image
 if subset=='y':
     bgr = cv2.imread(im)[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
@@ -196,7 +196,7 @@ if ortho:
 if not otsu_threshold == None:
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
     otsu_th, _ = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-    ignore_mask = gray > otsu_th*(otsu_threshold/100)  
+    ignore_mask = gray > otsu_th*(otsu_threshold/100)
 else:
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
     otsu_th, _ = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
@@ -218,7 +218,7 @@ if not sand_mask == None:
 else:
     # instantiate percentage sand for colormask
     perc_sand = 0
-    
+
     # interactively select the color for masking
     while True:
         do_masking = input("\ncreate a color mask (for sand, vegetation, etc.)? (y/n): ")
@@ -234,12 +234,12 @@ else:
             print("incorrect input, should be 'y' or 'n'")
     color_masks = []
     shadow_mask = np.invert(ignore_mask.copy().astype(np.uint8))
-    while do_masking == 'y':    
+    while do_masking == 'y':
         # instantiate coordinate class for storing the clicks
         coords = func.pick_colors()
         # also create a copy of the current shadow mask to pass to the function
         current_mask = np.invert(ignore_mask.copy().astype(np.uint8))
-        current_mask[current_mask==254] = 0    
+        current_mask[current_mask==254] = 0
         current_mask = np.dstack((current_mask, current_mask, current_mask))
         img = cv2.addWeighted(current_mask, 0.6, img, 1, 0)
         # create a window and set the callback function
@@ -249,7 +249,7 @@ else:
         while cv2.getWindowProperty(win_name, 0) >= 0:
             cv2.imshow(win_name, img)
             cv2.moveWindow(win_name, 0, 0)
-            cv2.resizeWindow(win_name, func.resizeWin(img, resize)[0], 
+            cv2.resizeWindow(win_name, func.resizeWin(img, resize)[0],
                              func.resizeWin(img, resize)[1])
             k = cv2.waitKey(1)
             if k == ord('q') & 0xFF:
@@ -261,7 +261,7 @@ else:
                     cv2.namedWindow("Image Overlay", cv2.WINDOW_NORMAL)
                     cv2.imshow("Image Overlay", bgr)
                     cv2.moveWindow("Image Overlay", 0, 0)
-                    cv2.resizeWindow("Image Overlay", func.resizeWin(bgr, resize)[0], 
+                    cv2.resizeWindow("Image Overlay", func.resizeWin(bgr, resize)[0],
                                  func.resizeWin(bgr, resize)[1])
                     cv2.waitKey(1)
                 cv2.destroyWindow("Image Overlay")
@@ -302,7 +302,7 @@ else:
                     break
                 else:
                     print("incorrect input, should be 'y' or 'n'")
-        
+
     # combine the color masks if any were applied and get percentage sand
     if len(color_masks) != 0:
         color_mask = np.zeros(color_masks[0].shape[0:2]).astype(bool)
@@ -318,14 +318,14 @@ else:
             func.array2rast(color_mask.astype(int), im, sand_mask_tiff_out, xgrid, ygrid, filetype=gdal.GDT_Byte)
             sourceRaster = gdal.Open(sand_mask_tiff_out)
             band = sourceRaster.GetRasterBand(1)
-            driver = ogr.GetDriverByName("ESRI Shapefile")    
-            outDatasource = driver.CreateDataSource(sand_mask_shp_out)                      
+            driver = ogr.GetDriverByName("ESRI Shapefile")
+            outDatasource = driver.CreateDataSource(sand_mask_shp_out)
             srs = osr.SpatialReference()
             srs.ImportFromWkt(sourceRaster.GetProjectionRef())
             outLayer = outDatasource.CreateLayer(sand_mask_shp_out, srs)
             newField = ogr.FieldDefn("SandMask", ogr.OFTInteger)
             outLayer.CreateField(newField)
-            gdal.Polygonize(band, band, outLayer, 0, [], callback=None)  
+            gdal.Polygonize(band, band, outLayer, 0, [], callback=None)
             outDatasource.Destroy()
             sourceRaster=None
             band=None
@@ -375,7 +375,7 @@ for region in meas.regionprops(tmp, coordinates='xy'):
     grain_dil_ = morph.dilation(region.image, selem=morph.selem.square(2)).astype(int)
     grain_dil_ = np.pad(grain_dil_, ((1, 1), (1,1)), 'constant')
     b_ = meas.regionprops(grain_dil_, coordinates='xy')[0].minor_axis_length
-    a_ = meas.regionprops(grain_dil_, coordinates='xy')[0].major_axis_length    
+    a_ = meas.regionprops(grain_dil_, coordinates='xy')[0].major_axis_length
     if b_ < float(cutoff) or a_ < float(cutoff):
         idxs = region.coords
         idxs = [tuple(i) for i in idxs]
@@ -389,13 +389,13 @@ grains = []
 polys = []
 coordList = []
 print("Getting grain properties")
-labels, _ = ndi.label(master_mask)      
+labels, _ = ndi.label(master_mask)
 for grain in meas.regionprops(labels, coordinates='xy'):
     # dilate the grain before getting measurements
     grain_dil = morph.dilation(grain.image, selem=morph.selem.square(2)).astype(int)
     grain_dil = np.pad(grain_dil, ((1, 1), (1,1)), 'constant')
     b = meas.regionprops(grain_dil, coordinates='xy')[0].minor_axis_length
-    a = meas.regionprops(grain_dil, coordinates='xy')[0].major_axis_length                    
+    a = meas.regionprops(grain_dil, coordinates='xy')[0].major_axis_length
     # get ellipse ring coordinates
     y0, x0 = grain.centroid[0], grain.centroid[1]
     orientation = grain.orientation
@@ -458,7 +458,7 @@ labels = labels.astype(float)
 labels[labels == 0] = np.nan
 labels[np.isfinite(labels)] = 255
 plt.imshow(labels, cmap='gray', alpha = 0.5)
-for grain in grains:    
+for grain in grains:
     y0, x0 = grain[0], grain[1]
     a, b = grain[3], grain[2]
     orientation = grain[4]
@@ -489,14 +489,14 @@ perc_nongrain -= perc_sand
 with open(csv_out, "w") as csv_file:
     writer=csv.writer(csv_file, delimiter=",",lineterminator="\n",)
     if ortho:
-        writer.writerow(["perc. not meas.", "perc. background color", 
-                         "UTM X (m)", "UTM Y (m)", "a (px)", "b (px)", 
-                         "a (m)", "b (m)", "area (px)", "area (m2)", 
+        writer.writerow(["perc. not meas.", "perc. background color",
+                         "UTM X (m)", "UTM Y (m)", "a (px)", "b (px)",
+                         "a (m)", "b (m)", "area (px)", "area (m2)",
                          "orientation", "ellipse area (px)", "perc. diff. area"])
     if not ortho:
-        writer.writerow(["perc. not meas.", "perc. background color", 
-                         "a (px)", "b (px)", "a (m)", "b (m)", 
-                         "area (px)", "area (m2)", 
+        writer.writerow(["perc. not meas.", "perc. background color",
+                         "a (px)", "b (px)", "a (m)", "b (m)",
+                         "area (px)", "area (m2)",
                          "orientation", "ellipse area (px)", "perc. diff. area"])
     for grain in grains:
         y0, x0 = grain[0], grain[1]
@@ -505,19 +505,19 @@ with open(csv_out, "w") as csv_file:
         area = grain[5]
         ellipseArea = grain[6]
         perc_diff_area = grain[7]
-        
+
         if ortho:
             x_coord = xgrid[np.round(y0).astype(int), np.round(x0).astype(int)]
             y_coord = ygrid[np.round(y0).astype(int), np.round(x0).astype(int)]
-            writer.writerow([perc_nongrain, perc_sand, x_coord, y_coord, a, b, 
-                             a*step, b*step, area, area*step**2, orientation, 
+            writer.writerow([perc_nongrain, perc_sand, x_coord, y_coord, a, b,
+                             a*step, b*step, area, area*step**2, orientation,
                              ellipseArea, perc_diff_area])
-    
+
         if not ortho:
-            writer.writerow([perc_nongrain, perc_sand, a, b, 
-                             a*step, b*step, area, area*step**2, orientation, 
+            writer.writerow([perc_nongrain, perc_sand, a, b,
+                             a*step, b*step, area, area*step**2, orientation,
                              ellipseArea, perc_diff_area])
-                
+
     csv_file.close()
 
 # save out as raster or image
@@ -526,8 +526,8 @@ if ortho:
     func.array2rast(labels, im, im_out, xgrid, ygrid)
 if not ortho:
     labels = (color.label2rgb(labels, bg_label=0, bg_color=[1, 1, 1])*255).astype(np.uint8)
-    cv2.imwrite(im_out, labels) 
+    cv2.imwrite(im_out, labels)
 
-# get end time    
+# get end time
 end = time.time()
 print("\nThat took about {:.0f} minutes, you counted {:d} pebbles!\n".format(end/60-start/60, len(grains)))
