@@ -14,7 +14,7 @@ Purinton, B. and Bookhagen, B.: Introducing PebbleCounts: A grain-sizing tool fo
 <img src="docs/figs/logo.png" width="300px" >
 
 # Software Citation
-Purinton, Benjamin; Bookhagen, Bodo (2019): PebbleCounts: a Python grain-sizing algorithm for gravel-bed river imagery. V. 1.0. GFZ Data Services. http://doi.org/10.5880/fidgeo.2019.007
+Purinton, Benjamin; Bookhagen, Bodo (2019): PebbleCounts: a Python grain-sizing algorithm for gravel-bed river imagery. V. 1.0. GFZ Data Services. [http://doi.org/10.5880/fidgeo.2019.007](http://doi.org/10.5880/fidgeo.2019.007)
 
 # License
 GNU General Public License, Version 3, 29 June 2007
