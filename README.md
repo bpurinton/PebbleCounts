@@ -7,14 +7,14 @@ author: "Ben Purinton ([purinton@uni-potsdam.de](purinton@uni-potsdam.de))"
 # Introduction to PebbleCounts
 PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. Read about it (and cite it!) here:
 
-**PUBLICATION DOI TO BE ADDED**
+Purinton, B. and Bookhagen, B.: Introducing PebbleCounts: A grain-sizing tool for photo surveys of dynamic gravel-bed rivers, Earth Surf. Dynam. Discuss., [https://doi.org/10.5194/esurf-2019-20](https://doi.org/10.5194/esurf-2019-20), in review, 2019
 
 [FULL MANUAL INCLUDING INSTALL AND RUNNING](docs/PebbleCounts_Manual.pdf)
 
 <img src="docs/figs/logo.png" width="300px" >
 
 # Software Citation
-Purinton, Benjamin; Bookhagen, Bodo (2019): PebbleCounts: a Python grain-sizing algorithm for gravel-bed river imagery. V. 1.0. GFZ Data Services. http://doi.org/10.5880/fidgeo.2019.007
+Purinton, Benjamin; Bookhagen, Bodo (2019): PebbleCounts: a Python grain-sizing algorithm for gravel-bed river imagery. V. 1.0. GFZ Data Services. [http://doi.org/10.5880/fidgeo.2019.007](http://doi.org/10.5880/fidgeo.2019.007)
 
 # License
 GNU General Public License, Version 3, 29 June 2007
