@@ -412,19 +412,19 @@ python PebbleCountsAuto.py -im example_data\ortho_resolution_1.2mmPerPix.tif -or
 
 * **Ortho With Modified Arguments:** (Decrease Sobel and Tophat thresholds to provide more edge detection and decrease the misfit threshold to reduce potential bad measurements.)
 ```
-python PebbleCounts.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho y \
+python PebbleCountsAuto.py -im example_data\ortho_resolution_1.2mmPerPix.tif -ortho y \
   -tophat_th 0.85 -sobel_th 0.85 -misfit_threshold 20
 ```
 
 * **Non-ortho Imagery With Default Arguments:** (Be sure to set the `-ortho` flag to `n` and also provide the `-input_resolution` in mm/pixel, which can be found as in the above section **Calculate Camera Resolution**.)
 ```
-python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
+python PebbleCountsAuto.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
   -input_resolution 0.63
 ```
 
 * **Non-ortho Imagery With Modified Arguments:** (Double the default value for `-min_size_threshold` since the resolution is < 0.8 mm/pixel. Also decrease the Sobel and Tophat thresholds to provide more edge detection given the higher resolution.)
 ```
-python PebbleCounts.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
+python PebbleCountsAuto.py -im example_data\nonortho_resolution_0.63mmPerPix.tif -ortho n \
   -input_resolution 0.63 -min_size_threshold 20 -tophat_th 0.85 -sobel_th 0.85
 ```
 
@@ -439,8 +439,8 @@ PebbleCounts(Auto) saves out a few outputs in the same folder that the image res
 
 And if the input is georeferenced imagery:
 
-* binary GeoTiff: `filename_PebbleCounts(Auto)_SandMask_TIFF.tif` 
-* and vector shapefile of the sand mask: `filename_PebbleCounts(Auto)_SandMask_SHP.shp`
+* binary GeoTiff: `filename_PebbleCounts_SandMask_TIFF.tif` 
+* and vector shapefile of the sand mask: `filename_PebbleCounts_SandMask_SHP.shp`
 
 The results .csv has an entry for each grain (Figure \ref{Fig:output_csv}) showing the fraction of the scene not measured (combined background shadow and unmeasured grains) the fraction of the scene that was selected by the color mask as background color (e.g., sand) and each grains' characteristics including a- and b-axis of the fit ellipse in pixels and in meters, the area covered by the grain mask in pixels and square meters, the orientation of the fit ellipse measured from -pi/2 to pi/2 relative to the positive x-axis (orientation=0) in cartesian coordinates, the area of the ellipse, and the percent misfit between the ellipse and the grain given by the percentage difference in area. If the input imagery is georeferenced the UTM Northing (Y) and Easting (X) coordinates of the pebble's centroid are be provided.
 
