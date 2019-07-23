@@ -7,8 +7,6 @@
 # Load the modules
 # =============================================================================
 
-# TODO: REMOVE THE "BORDER MASK" PERC SAND/PERC NON GRAIN
-
 import os, csv, time, argparse, sys
 import cv2
 import numpy as np
@@ -310,8 +308,6 @@ else:
             m = m[:,:,0].astype(bool)
             color_mask = np.logical_or(color_mask, m)
         # the "color mask" represents percentage of pixels that are sand
-#        border_mask = np.invert(cv2.imread(im, -1)[:,:,-1]).astype(bool)
-#        perc_sand = (np.sum(color_mask))/(color_mask.size-np.sum(border_mask))
         perc_sand = (np.sum(color_mask))/(color_mask.size)
         # also save the color_mask out as a TIFF and SHP mask if from georeferenced ortho-image
         if ortho:
