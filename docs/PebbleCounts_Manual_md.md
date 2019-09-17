@@ -16,7 +16,7 @@ logo-width: 360
 # Introduction
 This guide will walk you through the installation and running of PebbleCounts at the command-line. PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. It is a semi-automated  program in that edge detection and k-means segmentation are performed automatically, but the user must interactively hand-click the well outlined pebbles and ignore the bad results. For the detailed background and validation (in addition to the suggested use), check out the open-source publication accompanying the algorithm:
 
-Purinton, B. and Bookhagen, B.: Introducing PebbleCounts: A grain-sizing tool for photo surveys of dynamic gravel-bed rivers, Earth Surf. Dynam. Discuss., [https://doi.org/10.5194/esurf-2019-20](https://doi.org/10.5194/esurf-2019-20), in review, 2019
+Purinton, B. and Bookhagen, B.: Introducing PebbleCounts: a grain-sizing tool for photo surveys of dynamic gravel-bed rivers, Earth Surf. Dynam., 7, 859–877, [https://doi.org/10.5194/esurf-7-859-2019](https://doi.org/10.5194/esurf-7-859-2019), 2019.
 
 and cite it if you use the results in your own work.
 
