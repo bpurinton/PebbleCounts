@@ -367,11 +367,11 @@ master_mask[ignore_mask == False] = False
 
 # eliminate any regions that are smaller than cutoff value
 tmp, num = ndi.label(master_mask)
-for region in meas.regionprops(tmp, coordinates='xy'):
+for region in meas.regionprops(tmp):
     grain_dil_ = morph.dilation(region.image, selem=morph.selem.square(2)).astype(int)
     grain_dil_ = np.pad(grain_dil_, ((1, 1), (1,1)), 'constant')
-    b_ = meas.regionprops(grain_dil_, coordinates='xy')[0].minor_axis_length
-    a_ = meas.regionprops(grain_dil_, coordinates='xy')[0].major_axis_length
+    b_ = meas.regionprops(grain_dil_)[0].minor_axis_length
+    a_ = meas.regionprops(grain_dil_)[0].major_axis_length
     if b_ < float(cutoff) or a_ < float(cutoff):
         idxs = region.coords
         idxs = [tuple(i) for i in idxs]
@@ -386,15 +386,15 @@ polys = []
 coordList = []
 print("Getting grain properties")
 labels, _ = ndi.label(master_mask)
-for grain in meas.regionprops(labels, coordinates='xy'):
+for grain in meas.regionprops(labels):
     # dilate the grain before getting measurements
     grain_dil = morph.dilation(grain.image, selem=morph.selem.square(2)).astype(int)
     grain_dil = np.pad(grain_dil, ((1, 1), (1,1)), 'constant')
-    b = meas.regionprops(grain_dil, coordinates='xy')[0].minor_axis_length
-    a = meas.regionprops(grain_dil, coordinates='xy')[0].major_axis_length
+    b = meas.regionprops(grain_dil)[0].minor_axis_length
+    a = meas.regionprops(grain_dil)[0].major_axis_length
     # get ellipse ring coordinates
     y0, x0 = grain.centroid[0], grain.centroid[1]
-    orientation = grain.orientation
+    orientation = grain.orientation + np.pi/2
     phi = np.linspace(0,2*np.pi,50)
     X = x0 + a/2 * np.cos(phi) * np.cos(-orientation) - b/2 * np.sin(phi) * np.sin(-orientation)
     Y = y0 + a/2 * np.cos(phi) * np.sin(-orientation) + b/2 * np.sin(phi) * np.cos(-orientation)
