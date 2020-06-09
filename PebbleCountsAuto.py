@@ -394,7 +394,7 @@ for grain in meas.regionprops(labels):
     a = meas.regionprops(grain_dil)[0].major_axis_length
     # get ellipse ring coordinates
     y0, x0 = grain.centroid[0], grain.centroid[1]
-    orientation = grain.orientation + np.pi/2
+    orientation = grain.orientation - np.pi/2
     phi = np.linspace(0,2*np.pi,50)
     X = x0 + a/2 * np.cos(phi) * np.cos(-orientation) - b/2 * np.sin(phi) * np.sin(-orientation)
     Y = y0 + a/2 * np.cos(phi) * np.sin(-orientation) + b/2 * np.sin(phi) * np.cos(-orientation)
