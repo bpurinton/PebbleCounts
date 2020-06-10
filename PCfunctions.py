@@ -40,7 +40,7 @@ def image_check(im, resize_factor=0.7):
     while cv2.getWindowProperty(win_name, 0) >= 0:
         cv2.imshow(win_name, img)
         cv2.moveWindow(win_name, 0, 0)
-        cv2.resizeWindow(win_name, resizeWin(img, resize_factor)[0], 
+        cv2.resizeWindow(win_name, resizeWin(img, resize_factor)[0],
                          resizeWin(img, resize_factor)[1])
         k = cv2.waitKey(1)
         if k == ord('n') & 0xFF:
@@ -69,7 +69,7 @@ def featAND(master_mask, joining_mask):
         for j in range(master_mask.shape[1]):
             # if the pixel is labeled in both masks, append the label number
             if master_mask_labels[i,j] != 0 and joining_mask_labels[i,j] != 0:
-                connected_labels.append(joining_mask_labels[i,j])                
+                connected_labels.append(joining_mask_labels[i,j])
     # make a unique list of the labels in the joining mask that are connected to the master mask
     connected_labels = np.unique(np.array(connected_labels))
     # create the feature-AND mask
@@ -96,12 +96,12 @@ def featAND_fast(master_mask, joining_mask):
         for j in range(master_mask.shape[1]):
             # if the pixel is labeled in both masks, append the label number
             if master_mask_labels[i,j] != 0 and joining_mask_labels[i,j] != 0:
-                connected_labels.append(joining_mask_labels[i,j])                
+                connected_labels.append(joining_mask_labels[i,j])
     # make a unique list of the labels in the joining mask that are connected to the master mask
     connected_labels = np.unique(np.array(connected_labels))
-    # get all indices of the joining array using sparse matrix method 
+    # get all indices of the joining array using sparse matrix method
     cols = np.arange(joining_mask_labels.size)
-    M = csr_matrix((cols, (joining_mask_labels.ravel(), cols)), 
+    M = csr_matrix((cols, (joining_mask_labels.ravel(), cols)),
                    shape=(joining_mask_labels.max() + 1, joining_mask_labels.size))
     all_indx = [np.unravel_index(row.data, joining_mask_labels.shape) for row in M]
     # only take those indices in the connected labels array
@@ -136,7 +136,7 @@ class otsu_threshold:
                 self.thresh = float(value)
                 break
             else:
-                print("\nIncorrect input, should be an integer from 0-100\n")         
+                print("\nIncorrect input, should be an integer from 0-100\n")
     def apply_threshold(self, gray, bgr, otsu, resize_factor):
         gray_th = gray > otsu*(self.thresh/100)
         gray_th = gray_th.astype(np.uint8)
@@ -149,7 +149,7 @@ class otsu_threshold:
         while cv2.getWindowProperty(win_name, 0) >= 0:
             cv2.imshow(win_name, image_mask)
             cv2.moveWindow(win_name, 0, 0)
-            cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0], 
+            cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
                              resizeWin(image_mask, resize_factor)[1])
             k = cv2.waitKey(1)
             # only keep the threshold if the 'y' key is pressed
@@ -164,7 +164,7 @@ class otsu_threshold:
                     cv2.namedWindow("Image Overlay", cv2.WINDOW_NORMAL)
                     cv2.imshow("Image Overlay", bgr)
                     cv2.moveWindow("Image Overlay", 0, 0)
-                    cv2.resizeWindow("Image Overlay", resizeWin(bgr, resize_factor)[0], 
+                    cv2.resizeWindow("Image Overlay", resizeWin(bgr, resize_factor)[0],
                                  resizeWin(bgr, resize_factor)[1])
                     cv2.waitKey(1)
                 cv2.destroyWindow("Image Overlay")
@@ -206,7 +206,7 @@ class pick_colors:
             self.upper = upper
             # how does this mask look overlaid on the original image?
             image_mask = cv2.inRange(hsv,lower,upper)
-            
+
             image_mask = np.invert(image_mask).astype(bool)
             # clean it up
             image_mask = morph.remove_small_holes(image_mask, area_threshold=10, connectivity=2)
@@ -222,7 +222,7 @@ class pick_colors:
             while cv2.getWindowProperty(win_name, 0) >= 0:
                 cv2.imshow(win_name, image_mask)
                 cv2.moveWindow(win_name, 0, 0)
-                cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0], 
+                cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
                                  resizeWin(image_mask, resize_factor)[1])
                 k = cv2.waitKey(1)
                 # only keep the bounds if the 'y' key is pressed
@@ -264,7 +264,7 @@ class select_grains:
                 self.clicks = self.clicks[:-1]
             except:
                 print('no seed points clicked')
-            
+
 def sliding_window(image, stepSize, windowSize):
     """
     Sliding window breaks input image into overlapping regions.
@@ -276,7 +276,7 @@ def sliding_window(image, stepSize, windowSize):
 
 def getXYgrid(geo_rast):
     """
-    takes input geo raster and outputs numpy arrays of X and Y coordinates (center of pixel) 
+    takes input geo raster and outputs numpy arrays of X and Y coordinates (center of pixel)
     """
     # create X and Y and get the resolution (step)
     ds = gdal.Open(geo_rast)
@@ -286,9 +286,9 @@ def getXYgrid(geo_rast):
     step = gt[1]
     # size of grid (minx, stepx, 0, maxy, 0, -stepy)
     minx, maxy = gt[0], gt[3]
-    maxx, miny = gt[0] + step * cols, gt[3] + -step * rows  
+    maxx, miny = gt[0] + step * cols, gt[3] + -step * rows
     # center of pixel
-    ygrid = np.arange(miny + (step / 2), maxy, step) 
+    ygrid = np.arange(miny + (step / 2), maxy, step)
     xgrid = np.arange(minx + (step / 2), maxx, step)
     xgrid, ygrid = np.meshgrid(xgrid, ygrid)
     ygrid = np.flipud(ygrid)
@@ -316,7 +316,7 @@ def array2rast(array, rast_in, rast_out, xgrid, ygrid, NDV=0, filetype=gdal.GDT_
     outband.FlushCache()
     del driver, outRaster, gt, cs, outband, ds
 
-def calculate_camera_res(focal_length_mm, height_m, sensorH_mm=15.6, sensorW_mm=23.5, 
+def calculate_camera_res(focal_length_mm, height_m, sensorH_mm=15.6, sensorW_mm=23.5,
                          pixelsH=4000, pixelsW=6000):
     """
     Get approximated camera resolution in mm/pixel given a top down photograph.
@@ -327,4 +327,4 @@ def calculate_camera_res(focal_length_mm, height_m, sensorH_mm=15.6, sensorW_mm=
     fovH_m = (sensorH_mm/focal_length_mm)*height_m
     fovW_m = (sensorW_mm/focal_length_mm)*height_m
     print("\nThe field of view is {:0.2f} by {:0.2f} m\n".format(fovH_m, fovW_m))
-    return np.round(fovH_m*1000/pixelsH, 4), np.round(fovW_m*1000/pixelsW, 4) 
+    return np.round(fovH_m*1000/pixelsH, 4), np.round(fovW_m*1000/pixelsW, 4)
