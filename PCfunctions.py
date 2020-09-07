@@ -16,13 +16,14 @@ def resizeWin(img, resize_factor=0.7):
     must be in the range (0, 1].
     """
     # this import needs to be within the function or else openCV throws errors
-    import tkinter as tk
-    root = tk.Tk()
-    resize_factor = (1 - resize_factor) + 1
-    sys_w, sys_h = root.winfo_screenwidth()/resize_factor, root.winfo_screenheight()/resize_factor
-    root.destroy()
-    root.quit()
-    del root
+    # import tkinter as tk
+    # root = tk.Tk()
+    # resize_factor = (1 - resize_factor) + 1
+    # sys_w, sys_h = root.winfo_screenwidth()/resize_factor, root.winfo_screenheight()/resize_factor
+    # root.destroy()
+    # root.quit()
+    # del root
+    sys_w, sys_h = 1280/resize_factor, 720/resize_factor
     scale_width = sys_w / img.shape[1]
     scale_height = sys_h / img.shape[0]
     dimensions = min(scale_width, scale_height)
@@ -40,8 +41,8 @@ def image_check(im, resize_factor=0.7):
     while cv2.getWindowProperty(win_name, 0) >= 0:
         cv2.imshow(win_name, img)
         cv2.moveWindow(win_name, 0, 0)
-        # cv2.resizeWindow(win_name, resizeWin(img, resize_factor)[0],
-        #                  resizeWin(img, resize_factor)[1])
+        cv2.resizeWindow(win_name, resizeWin(img, resize_factor)[0],
+                         resizeWin(img, resize_factor)[1])
         k = cv2.waitKey(1)
         if k == ord('n') & 0xFF:
             cv2.destroyAllWindows()
@@ -149,8 +150,8 @@ class otsu_threshold:
         while cv2.getWindowProperty(win_name, 0) >= 0:
             cv2.imshow(win_name, image_mask)
             cv2.moveWindow(win_name, 0, 0)
-            # cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
-            #                  resizeWin(image_mask, resize_factor)[1])
+            cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
+                             resizeWin(image_mask, resize_factor)[1])
             k = cv2.waitKey(1)
             # only keep the threshold if the 'y' key is pressed
             if k == ord('y') & 0xFF:
@@ -164,8 +165,8 @@ class otsu_threshold:
                     cv2.namedWindow("Image Overlay", cv2.WINDOW_NORMAL)
                     cv2.imshow("Image Overlay", bgr)
                     cv2.moveWindow("Image Overlay", 0, 0)
-                    # cv2.resizeWindow("Image Overlay", resizeWin(bgr, resize_factor)[0],
-                    #             resizeWin(bgr, resize_factor)[1])
+                    cv2.resizeWindow("Image Overlay", resizeWin(bgr, resize_factor)[0],
+                                resizeWin(bgr, resize_factor)[1])
                     cv2.waitKey(1)
                 cv2.destroyWindow("Image Overlay")
             # ignore the threshold if 'n' or window is closed
@@ -222,8 +223,8 @@ class pick_colors:
             while cv2.getWindowProperty(win_name, 0) >= 0:
                 cv2.imshow(win_name, image_mask)
                 cv2.moveWindow(win_name, 0, 0)
-                # cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
-                #                  resizeWin(image_mask, resize_factor)[1])
+                cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
+                                 resizeWin(image_mask, resize_factor)[1])
                 k = cv2.waitKey(1)
                 # only keep the bounds if the 'y' key is pressed
                 if k == ord('y') & 0xFF:
