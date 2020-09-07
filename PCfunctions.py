@@ -165,7 +165,7 @@ class otsu_threshold:
                     cv2.imshow("Image Overlay", bgr)
                     cv2.moveWindow("Image Overlay", 0, 0)
                     # cv2.resizeWindow("Image Overlay", resizeWin(bgr, resize_factor)[0],
-                                 resizeWin(bgr, resize_factor)[1])
+                    #             resizeWin(bgr, resize_factor)[1])
                     cv2.waitKey(1)
                 cv2.destroyWindow("Image Overlay")
             # ignore the threshold if 'n' or window is closed
