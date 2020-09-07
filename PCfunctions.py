@@ -16,14 +16,14 @@ def resizeWin(img, resize_factor=0.7):
     must be in the range (0, 1].
     """
     # this import needs to be within the function or else openCV throws errors
-    # import tkinter as tk
-    # root = tk.Tk()
-    # resize_factor = (1 - resize_factor) + 1
-    # sys_w, sys_h = root.winfo_screenwidth()/resize_factor, root.winfo_screenheight()/resize_factor
-    # root.destroy()
-    # root.quit()
-    # del root
-    sys_w, sys_h = 1280/resize_factor, 720/resize_factor
+    import tkinter as tk
+    root = tk.Tk()
+    resize_factor = (1 - resize_factor) + 1
+    sys_w, sys_h = root.winfo_screenwidth()/resize_factor, root.winfo_screenheight()/resize_factor
+    root.destroy()
+    root.quit()
+    del root
+    # sys_w, sys_h = 1280/resize_factor, 720/resize_factor
     scale_width = sys_w / img.shape[1]
     scale_height = sys_h / img.shape[0]
     dimensions = min(scale_width, scale_height)
