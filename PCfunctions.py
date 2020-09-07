@@ -40,8 +40,8 @@ def image_check(im, resize_factor=0.7):
     while cv2.getWindowProperty(win_name, 0) >= 0:
         cv2.imshow(win_name, img)
         cv2.moveWindow(win_name, 0, 0)
-        cv2.resizeWindow(win_name, resizeWin(img, resize_factor)[0],
-                         resizeWin(img, resize_factor)[1])
+        # cv2.resizeWindow(win_name, resizeWin(img, resize_factor)[0],
+        #                  resizeWin(img, resize_factor)[1])
         k = cv2.waitKey(1)
         if k == ord('n') & 0xFF:
             cv2.destroyAllWindows()
@@ -149,8 +149,8 @@ class otsu_threshold:
         while cv2.getWindowProperty(win_name, 0) >= 0:
             cv2.imshow(win_name, image_mask)
             cv2.moveWindow(win_name, 0, 0)
-            cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
-                             resizeWin(image_mask, resize_factor)[1])
+            # cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
+            #                  resizeWin(image_mask, resize_factor)[1])
             k = cv2.waitKey(1)
             # only keep the threshold if the 'y' key is pressed
             if k == ord('y') & 0xFF:
@@ -164,7 +164,7 @@ class otsu_threshold:
                     cv2.namedWindow("Image Overlay", cv2.WINDOW_NORMAL)
                     cv2.imshow("Image Overlay", bgr)
                     cv2.moveWindow("Image Overlay", 0, 0)
-                    cv2.resizeWindow("Image Overlay", resizeWin(bgr, resize_factor)[0],
+                    # cv2.resizeWindow("Image Overlay", resizeWin(bgr, resize_factor)[0],
                                  resizeWin(bgr, resize_factor)[1])
                     cv2.waitKey(1)
                 cv2.destroyWindow("Image Overlay")
@@ -222,8 +222,8 @@ class pick_colors:
             while cv2.getWindowProperty(win_name, 0) >= 0:
                 cv2.imshow(win_name, image_mask)
                 cv2.moveWindow(win_name, 0, 0)
-                cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
-                                 resizeWin(image_mask, resize_factor)[1])
+                # cv2.resizeWindow(win_name, resizeWin(image_mask, resize_factor)[0],
+                #                  resizeWin(image_mask, resize_factor)[1])
                 k = cv2.waitKey(1)
                 # only keep the bounds if the 'y' key is pressed
                 if k == ord('y') & 0xFF:
