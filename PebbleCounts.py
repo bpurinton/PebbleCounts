@@ -27,6 +27,12 @@ from shapely.geometry.polygon import Polygon
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+# use a different backend for matplotlib on MacOS
+from sys import platform as sys_pf
+if sys_pf == 'darwin':
+    import matplotlib
+    matplotlib.use('TkAgg')
+
 # =============================================================================
 # Argument parser, set from the command-line
 # =============================================================================
