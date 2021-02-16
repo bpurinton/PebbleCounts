@@ -4,6 +4,8 @@ date: "March 2019"
 author: "Ben Purinton ([purinton@uni-potsdam.de](purinton@uni-potsdam.de))"
 ---
 
+**UPDATE February 16th, 2021. Another set of scripts with some application-specific up-scaling focus has been created in the repository [PebbleCounts-Application](https://github.com/UP-RS-ESP/PebbleCounts-Application). An upcoming manuscript will be linked there with more information.**
+
 # Introduction to PebbleCounts
 PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. Read about it (and cite it!) here:
 
