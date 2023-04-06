@@ -215,8 +215,8 @@ class pick_colors:
             image_mask = np.invert(image_mask).astype(bool)
             # clean it up
             image_mask = morph.remove_small_holes(image_mask, area_threshold=10, connectivity=2)
-            image_mask = morph.opening(image_mask, selem=morph.selem.disk(1))
-            image_mask = morph.closing(image_mask, selem=morph.selem.disk(1))
+            image_mask = morph.opening(image_mask, footprint=morph.footprint.disk(1))
+            image_mask = morph.closing(image_mask, footprint=morph.footprint.disk(1))
             image_mask = image_mask.astype(np.uint8)
             image_mask[image_mask==0] = 255
             image_mask[image_mask==1] = 0
