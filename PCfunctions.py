@@ -16,7 +16,7 @@ def resizeWin(img, resize_factor=0.7):
     must be in the range (0, 1].
     """
     from sys import platform as sys_pf
-    if 'win' in sys_pf:
+    if sys_pf != 'darwin':
         # this import needs to be within the function or else openCV throws errors
         import tkinter as tk
         root = tk.Tk()
