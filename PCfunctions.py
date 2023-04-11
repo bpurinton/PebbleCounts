@@ -7,6 +7,7 @@ import numpy as np
 import cv2
 from skimage import measure as meas
 from skimage import morphology as morph
+from skimage.morphology import (square, disk)
 from osgeo import gdal
 from scipy.sparse import csr_matrix
 
@@ -215,8 +216,8 @@ class pick_colors:
             image_mask = np.invert(image_mask).astype(bool)
             # clean it up
             image_mask = morph.remove_small_holes(image_mask, area_threshold=10, connectivity=2)
-            image_mask = morph.opening(image_mask, footprint=morph.footprint.disk(1))
-            image_mask = morph.closing(image_mask, footprint=morph.footprint.disk(1))
+            image_mask = morph.opening(image_mask, footprint=disk(1))
+            image_mask = morph.closing(image_mask, footprint=disk(1))
             image_mask = image_mask.astype(np.uint8)
             image_mask[image_mask==0] = 255
             image_mask[image_mask==1] = 0
