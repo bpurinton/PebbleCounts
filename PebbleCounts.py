@@ -226,6 +226,7 @@ if subset=='y':
 else:
     bgr = cv2.imread(im)
 
+
 # do strong nonlocal means denoising
 print("\nNon-local means filtering of color image")
 bgr = cv2.fastNlMeansDenoisingColored(bgr, None, first_nl_denoise, 1, 7, 21)
@@ -485,6 +486,10 @@ for index in range(len(windowSizes)):
         # create kmeans vector
         X = np.column_stack((a_blur_.reshape(-1, 1), b_blur_.reshape(-1, 1),
                              rgrid_scaled.reshape(-1, 1), cgrid_scaled.reshape(-1, 1)))
+
+        if np.isnan(X).any(): # test if a_blur, b_blur are NaNs (in this case the image would be colorless)
+            print('There is reason to believe that this image is singleband (greyscale).\nThis could affect the quality of k-means clustering...')
+            X = np.column_stack((rgrid_scaled.reshape(-1, 1), cgrid_scaled.reshape(-1, 1))) # if the image is greyscale, just use cgrid and rgrid
 
         # run kmeans
         print("Running k-means")
