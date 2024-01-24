@@ -2,6 +2,12 @@
 #       Developed by Ben Purinton (purinton[at]uni-potsdam.de)
 #       04 April 2019
 #       See the help manual for instructions on use at: https://github.com/bpurinton/PebbleCounts
+#       
+#       23 Jan 2024
+#       modifications by Colten Elkin to bypass the manual clicking selection process. Needed to streamline
+#           the processing of many images. Potential degredation in confidence in particle distribution if 
+#           the skip_manual_clicking input is set to True. Contact via email provided on github.com/coltenelkin
+#           with questions
 
 # =============================================================================
 # Load the modules
@@ -24,9 +30,13 @@ from skimage import filters as filt
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 from shapely.geometry.polygon import Polygon
+from datetime import datetime
+from datetime import timedelta
+
 # ignore some warnings thrown by sci-kit
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.filterwarnings("ignore")
 
 # use a different backend for matplotlib on MacOS
 from sys import platform as sys_pf
@@ -80,6 +90,9 @@ parser.add_argument("-canny_sig", type=int,
                     help="Canny filtering sigma value for edge detection. DEFAULT=2", default=2)
 parser.add_argument("-resize", type=float,
                     help="Value to resize windows by should be between 0 and 1. DEFAULT=0.8", default=0.8)
+parser.add_argument("-skip_manual_clicking", type=bool,
+                    help="Value to optionally skip manually clicking good particles. A value of True assumes that all k-means areas are well-delineated particles. DEFAULT=False", default=False)
+
 args = parser.parse_args()
 
 # =============================================================================
@@ -107,6 +120,7 @@ canny_sig = args.canny_sig
 sobel_th = args.sobel_th
 input_resolution = args.input_resolution
 subset = args.subset
+skip_manual_clicking = args.skip_manual_clicking
 
 # exit if there was no image supplied or the file doesn't exist
 if im == None:
@@ -211,6 +225,7 @@ if subset=='y':
     bgr = cv2.imread(im)[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
 else:
     bgr = cv2.imread(im)
+
 
 # do strong nonlocal means denoising
 print("\nNon-local means filtering of color image")
@@ -472,6 +487,10 @@ for index in range(len(windowSizes)):
         X = np.column_stack((a_blur_.reshape(-1, 1), b_blur_.reshape(-1, 1),
                              rgrid_scaled.reshape(-1, 1), cgrid_scaled.reshape(-1, 1)))
 
+        if np.isnan(X).any(): # test if a_blur, b_blur are NaNs (in this case the image would be colorless)
+            print('There is reason to believe that this image is singleband (greyscale).\nThis could affect the quality of k-means clustering...')
+            X = np.column_stack((rgrid_scaled.reshape(-1, 1), cgrid_scaled.reshape(-1, 1))) # if the image is greyscale, just use cgrid and rgrid
+
         # run kmeans
         print("Running k-means")
         # dummy variables for looping
@@ -532,16 +551,22 @@ for index in range(len(windowSizes)):
 
         # eliminate any regions that are smaller than cutoff value
         tmp, num = ndi.label(master_mask[:,:,0])
+        centroidSaverX = [] # Add a list of tuples of each of the kept centroids so we can just use all of them automatically. 
+        centroidSaverY = []
         for region in meas.regionprops(tmp):
             grain_dil_ = morph.dilation(region.image, footprint=square(2)).astype(int)
             grain_dil_ = np.pad(grain_dil_, ((1, 1), (1,1)), 'constant')
             b_ = meas.regionprops(grain_dil_)[0].minor_axis_length
             a_ = meas.regionprops(grain_dil_)[0].major_axis_length
+            centroidTuple = region.centroid
             if b_ < float(cutoff) or a_ < float(cutoff):
                 idxs = region.coords
                 idxs = [tuple(i) for i in idxs]
                 for idx in idxs:
                     tmp[idx] = 0
+            else: # save centroids of all particles for later. This will be used if we don't click the good particles in the next section below
+                centroidSaverX = np.append(centroidSaverX, centroidTuple[0])
+                centroidSaverY = np.append(centroidSaverY, centroidTuple[1])
         idx = np.where(tmp == 0)
         master_mask[idx] = [0, 0, 0]
 
@@ -558,9 +583,10 @@ for index in range(len(windowSizes)):
         # instantiate coordinate class for storing the clicks
         coords = func.select_grains()
         # create a window, call it open and click through it
-        win_name = "KMeans ('r' see image, 'q' close)"
+        win_name = "KMeans ('r' see image, 'left-click' on all good particles, then 'q' close. Close before clicking to select all colored particles)" # 
         cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
         cv2.setMouseCallback(win_name, coords.clicker, param=[img])
+        startNow = datetime.now() # secondary time variables for skipping manual clicking. Ignored if default value or if set to False
         while cv2.getWindowProperty(win_name, 0) >= 0:
             cv2.imshow(win_name, img)
             cv2.moveWindow(win_name, 0, 0)
@@ -583,11 +609,16 @@ for index in range(len(windowSizes)):
             if k == ord('q') & 0xFF:
                 cv2.destroyAllWindows()
                 break
+            now = datetime.now() # test time. Want the window to stay up for 5 seconds even if we're skipping manual clicking
+            if skip_manual_clicking: # block that automatically moves onto next section if the user set the input to skip manual clicking
+                if now - startNow >= timedelta(seconds=5):
+                    cv2.destroyAllWindows()
+                    break
 
         # get the region properties of clicked areas
         print("Getting properties of clicked grains")
         master_mask = master_mask[:,:,0]
-        if len(coords.clicks) != 0:
+        if len(coords.clicks) != 0: # clicked on good particles
             master_mask, _ = ndi.label(master_mask)
             labels = np.zeros(master_mask.shape).astype(np.uint8)
             for click in coords.clicks:
@@ -625,8 +656,45 @@ for index in range(len(windowSizes)):
             if np.sum(labels) != 0:
                 all_labels[ulx:lrx, uly:lry] = all_labels[ulx:lrx, uly:lry] + labels
 
-        else:
-            pass
+        else: #if we didn't click on any particles, we assume that all particles are good and use their centroids as the click location
+            master_mask, _ = ndi.label(master_mask)
+            labels = np.zeros(master_mask.shape).astype(np.uint8)  # initialize binary storage array same size as photo
+            for indexer in range(len(centroidSaverX)): # call the tuples from when we saved the region centroids
+                centroidX, centroidY = centroidSaverX[indexer], centroidSaverY[indexer] # grab centroid of n-th particle
+                # print(centroidX, centroidY)
+                if not master_mask[int(centroidX), int(centroidY)] == 0: # make sure the centroid isn't in the mask = 0 area
+                    labels[master_mask==master_mask[int(centroidX), int(centroidY)]] = 1 # where the region around the centroid is all the same value, set the labeller to 1
+            labels, _ = ndi.label(labels)
+            for grain in meas.regionprops(labels):
+                # dilate the grains
+                grain_dil = morph.dilation(grain.image, footprint=square(2)).astype(int)
+                grain_dil = np.pad(grain_dil, ((1, 1), (1,1)), 'constant')
+                b = meas.regionprops(grain_dil)[0].minor_axis_length
+                a = meas.regionprops(grain_dil)[0].major_axis_length
+                # area of ellipse
+                y0, x0 = grain.centroid[0]+ulx, grain.centroid[1]+uly
+                orientation = grain.orientation - np.pi/2
+                phi = np.linspace(0,2*np.pi,50)
+                X = x0 + a/2 * np.cos(phi) * np.cos(-orientation) - b/2 * np.sin(phi) * np.sin(-orientation)
+                Y = y0 + a/2 * np.cos(phi) * np.sin(-orientation) + b/2 * np.sin(phi) * np.cos(-orientation)
+                tupVerts = list(zip(X, Y))
+                p = Path(tupVerts)
+                x, y = zip(*p.vertices)
+                poly = Polygon([(i[0], i[1]) for i in list(zip(x, y))])
+                # percent difference in area (misfit)
+                perc_diff_area = ((poly.area-grain.filled_area)/poly.area)*100
+                # append the grain
+                grains.append((y0, x0, b, a, orientation, grain.filled_area, poly.area, perc_diff_area))
+
+            # add the chosen grains to the ignore mask
+            labels[labels != 0] = 1
+            labels = labels.astype(bool)
+            ignore_mask[ulx:lrx, uly:lry] = np.logical_and(ignore_mask[ulx:lrx, uly:lry],
+                                                           np.invert(labels))
+
+            # also add it to an "all labels" mask if there are any labels in it
+            if np.sum(labels) != 0:
+                all_labels[ulx:lrx, uly:lry] = all_labels[ulx:lrx, uly:lry] + labels
 
 # =============================================================================
 # Output a final plot, .csv of grain-size data, and label mask
