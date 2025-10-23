@@ -1,5 +1,55 @@
 **Update on August 16th, 2021:** Another set of scripts with some application-specific up-scaling focus has been created in the repository [PebbleCounts-Application](https://github.com/UP-RS-ESP/PebbleCounts-Application). The manuscript associated with this application is: https://doi.org/10.1029/2021JF006260.
 
+# 🎉 NEW: Graphical User Interface (GUI)
+
+PebbleCounts now includes a user-friendly web-based GUI built with Gradio! The GUI provides an intuitive interface for both Manual and Automated processing modes without requiring command-line expertise.
+
+## Quick Start with GUI
+
+### Installation
+```bash
+# Install all dependencies including the GUI framework
+pip install -r requirements.txt
+```
+
+### Launch the GUI
+```bash
+# Simple launcher with dependency checking
+python run_gui.py
+
+# Or launch directly
+python pebblecounts_gui.py
+```
+
+The GUI will automatically open in your web browser at `http://127.0.0.1:7860`
+
+### GUI Features
+
+- **Manual Mode Tab**: Interactive k-means segmentation with all parameters accessible via sliders and inputs
+- **Automated Mode Tab**: Fully automatic processing for batch workflows
+- **Resolution Calculator Tab**: Built-in tool for calculating pixel resolution from camera parameters
+- **About Tab**: Complete documentation and usage guidelines
+- **Progress Tracking**: Real-time feedback during processing
+- **File Management**: Easy upload/download of images and results
+
+### GUI vs Command Line
+
+The **GUI** is recommended for:
+- New users learning PebbleCounts
+- Quick parameter experimentation
+- Single image analysis
+- Users preferring visual interfaces
+
+The **Command Line** (original scripts) is recommended for:
+- Batch processing multiple images
+- Integration into automated workflows
+- Advanced scripting and customization
+- Maximum control over all parameters
+
+Both interfaces use the same underlying processing code and produce identical results.
+
+---
+
 # Introduction to PebbleCounts
 PebbleCounts is a Python based application for the identification and sizing of gravel from either orthorectified, georeferenced (**UTM projected**) images with known resolution or simple non-orthorectified images taken from directly overhead with the image resolution approximated by the camera parameters and shot height. Read about it (and cite it!) here:
 
@@ -29,6 +79,29 @@ Georeferenced ortho-photos should be in a [**UTM projection**](https://en.wikipe
 In addition to the manual-clicking version of PebbleCounts based on k-means segmentation, we have also developed and included an automated version that has higher uncertainties. We recommend using PebbleCounts in a subset of data to validate larger areas run in PebbleCountsAuto. The description of the automatic algorithm and uncertainties can be found in the publication: [https://doi.org/10.5194/esurf-7-859-2019](https://doi.org/10.5194/esurf-7-859-2019). Validation steps using both methods are shown in detail in another publication: [https://doi.org/10.1029/2021JF006260](https://doi.org/10.1029/2021JF006260).
 
 # Installation
+
+## Option 1: Using the GUI (Recommended for Most Users)
+
+1. Download/clone the GitHub repository:
+```bash
+git clone https://github.com/bpurinton/PebbleCounts.git
+cd PebbleCounts
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Launch the GUI:
+```bash
+python run_gui.py
+```
+
+That's it! The launcher will check dependencies and start the web interface.
+
+## Option 2: Traditional Command-Line Setup
+
 The first step is downloading the GitHub repository somewhere on your computer, and unzipping it. There you will find the Python algorithms (e.g., `PebbleCounts.py`), a folder `example_data` with two example images one orthorectified and the other raw, a jupyter notebook `Read_and_Plot_PebbleCounts_CSV.ipynb` with a tutorial on how to manipulate output grain-size distribution .csv files, and a folder `docs` containing the [full manual](docs/PebbleCounts_Manual.pdf).
 
 For newcomers to Python, no worries! Installation should be a cinch on most machines. First, you'll want the [Miniconda](https://conda.io/miniconda.html) Python package manager to setup a new Python environment for running the algorithm ([see this good article on Python package management](https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)). Download either the 32- or 64-bit Miniconda installer of Python 3.x then follow the instructions (either using the `.exe` file for Windows, `.pkg` for Mac, or `bash installer` for Linux). Add Miniconda to the system `PATH` variable when prompted.
