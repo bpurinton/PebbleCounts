@@ -42,8 +42,7 @@ class PebbleCountsGUI:
         first_nl_denoise,
         tophat_th,
         sobel_th,
-        canny_sig,
-        progress=gr.Progress()
+        canny_sig
     ):
         """
         Run PebbleCounts in manual mode
@@ -52,8 +51,6 @@ class PebbleCountsGUI:
             return None, None, "Please upload an image file."
 
         try:
-            progress(0, desc="Initializing...")
-
             # Build command
             cmd = ["python", "PebbleCounts.py"]
             cmd.extend(["-im", image_file.name])
@@ -77,8 +74,6 @@ class PebbleCountsGUI:
             cmd.extend(["-canny_sig", str(canny_sig)])
             cmd.extend(["-resize", "0.6"])  # Smaller for GUI
 
-            progress(0.1, desc="Starting processing...")
-
             # Run the command
             process = subprocess.Popen(
                 cmd,
@@ -90,11 +85,7 @@ class PebbleCountsGUI:
             )
 
             # Handle interactive prompts
-            progress(0.3, desc="Processing... (check terminal for interactive prompts)")
-
             stdout, stderr = process.communicate(input="n\n")
-
-            progress(0.9, desc="Finalizing...")
 
             if process.returncode != 0:
                 return None, None, f"Error running PebbleCounts:\n{stderr}\n{stdout}"
@@ -114,8 +105,6 @@ class PebbleCountsGUI:
 
             if os.path.exists(csv_out):
                 csv_file = csv_out
-
-            progress(1.0, desc="Complete!")
 
             status = f"Processing complete!\n\nResults saved to:\n- {csv_out}\n- {fig_out}\n\n{stdout}"
 
@@ -138,8 +127,7 @@ class PebbleCountsGUI:
         first_nl_denoise,
         tophat_th,
         sobel_th,
-        canny_sig,
-        progress=gr.Progress()
+        canny_sig
     ):
         """
         Run PebbleCounts in automated mode
@@ -148,8 +136,6 @@ class PebbleCountsGUI:
             return None, None, "Please upload an image file."
 
         try:
-            progress(0, desc="Initializing...")
-
             # Build command
             cmd = ["python", "PebbleCountsAuto.py"]
             cmd.extend(["-im", image_file.name])
@@ -175,8 +161,6 @@ class PebbleCountsGUI:
             cmd.extend(["-canny_sig", str(canny_sig)])
             cmd.extend(["-resize", "0.6"])
 
-            progress(0.1, desc="Starting processing...")
-
             # Run the command
             process = subprocess.Popen(
                 cmd,
@@ -188,10 +172,7 @@ class PebbleCountsGUI:
             )
 
             # Provide default answers to interactive prompts
-            progress(0.3, desc="Processing... (answering prompts automatically)")
             stdout, stderr = process.communicate(input="n\nn\n")
-
-            progress(0.9, desc="Finalizing...")
 
             if process.returncode != 0:
                 return None, None, f"Error running PebbleCounts:\n{stderr}\n{stdout}"
@@ -210,8 +191,6 @@ class PebbleCountsGUI:
 
             if os.path.exists(csv_out):
                 csv_file = csv_out
-
-            progress(1.0, desc="Complete!")
 
             status = f"Processing complete!\n\nResults saved to:\n- {csv_out}\n- {fig_out}\n\n{stdout}"
 
