@@ -1,0 +1,29 @@
+name: pebblecounts-gui
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Python
+  - python=3.9
+
+  # Core scientific computing
+  - numpy>=1.19.0
+  - scipy>=1.5.0
+
+  # Image processing
+  - opencv>=4.5.0
+  - scikit-image>=0.18.0
+  - scikit-learn>=0.24.0
+  - pillow>=8.0.0
+
+  # Visualization
+  - matplotlib>=3.3.0
+
+  # Geospatial (GDAL and dependencies)
+  - gdal>=3.0.0
+  - shapely>=1.7.0
+
+  # GUI framework (install via pip in conda env)
+  - pip
+  - pip:
+    - gradio>=4.0.0

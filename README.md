@@ -82,23 +82,38 @@ In addition to the manual-clicking version of PebbleCounts based on k-means segm
 
 ## Option 1: Using the GUI (Recommended for Most Users)
 
-1. Download/clone the GitHub repository:
+### Conda Installation (STRONGLY RECOMMENDED)
+
+Conda handles all dependencies including GDAL, which is difficult to install otherwise.
+
 ```bash
+# 1. Clone the repository
 git clone https://github.com/bpurinton/PebbleCounts.git
 cd PebbleCounts
+
+# 2. Create conda environment from file
+conda env create -f environment.yml
+
+# 3. Activate the environment
+conda activate pebblecounts-gui
+
+# 4. Launch the GUI
+python pebblecounts_gui.py
 ```
 
-2. Install dependencies:
+The GUI will open in your browser at http://127.0.0.1:7860
+
+**Troubleshooting:** If you get an SSL error during environment creation, see [CONDA_SETUP.md](CONDA_SETUP.md) for solutions.
+
+### Alternative: pip Installation
+
+If you prefer pip or don't have conda:
+
 ```bash
 pip install -r requirements.txt
+# Note: You'll need to install GDAL separately via system package manager
+python pebblecounts_gui.py
 ```
-
-3. Launch the GUI:
-```bash
-python run_gui.py
-```
-
-That's it! The launcher will check dependencies and start the web interface.
 
 ## Option 2: Traditional Command-Line Setup
 

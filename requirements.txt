@@ -1,4 +1,16 @@
-# PebbleCounts - Requirements File
+# PebbleCounts - Requirements File (for pip installation)
+#
+# NOTE: For GUI users, we STRONGLY recommend using conda with environment.yml instead.
+# This avoids GDAL installation issues which are common with pip.
+#
+# Conda installation (RECOMMENDED):
+#   conda env create -f environment.yml
+#   conda activate pebblecounts-gui
+#
+# Pip installation (if you must):
+#   pip install -r requirements.txt
+#   # Then manually install GDAL via system package manager
+
 # Core scientific computing and image processing
 numpy>=1.19.0
 scipy>=1.5.0
@@ -9,11 +21,9 @@ matplotlib>=3.3.0
 Pillow>=8.0.0
 
 # Geospatial libraries
-gdal>=3.0.0
+# NOTE: GDAL via pip often fails. Use conda or system package manager instead.
 shapely>=1.7.0
+# gdal>=3.0.0  # Commented out - install separately via conda or brew
 
 # GUI framework
 gradio>=4.0.0
-
-# Optional: For better performance
-# numpy-mkl>=1.19.0
