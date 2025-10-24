@@ -285,7 +285,7 @@ Use the average value ({gsd_avg:.3f}) as the input_resolution parameter.
                         with gr.Column(scale=1):
                             manual_image = gr.File(label="Upload Image", file_types=["image"])
                             manual_ortho = gr.Checkbox(label="Georeferenced Ortho-Image?", value=True)
-                            manual_resolution = gr.Number(label="Input Resolution (mm/pixel, if not ortho)", value=None)
+                            manual_resolution = gr.Number(label="Input Resolution (mm/pixel, if not ortho)", value=0.8)
                             manual_subset = gr.Checkbox(label="Interactively Subset Image?", value=False)
 
                             with gr.Accordion("Basic Parameters", open=True):
@@ -293,8 +293,7 @@ Use the average value ({gsd_avg:.3f}) as the input_resolution parameter.
                                                         label="Maximum Grain Size (meters)")
                                 manual_cutoff = gr.Slider(5, 50, value=20, step=1,
                                                          label="Minimum B-axis Length (pixels)")
-                                manual_otsu = gr.Slider(50, 100, value=None, step=1,
-                                                       label="Otsu Threshold % (leave empty for interactive)")
+                                manual_otsu = gr.Number(label="Otsu Threshold % (0 for interactive)", value=0, minimum=0, maximum=100)
 
                             with gr.Accordion("Advanced Parameters", open=False):
                                 manual_denoise = gr.Slider(1, 10, value=5, step=1,
@@ -335,7 +334,7 @@ Use the average value ({gsd_avg:.3f}) as the input_resolution parameter.
                         with gr.Column(scale=1):
                             auto_image = gr.File(label="Upload Image", file_types=["image"])
                             auto_ortho = gr.Checkbox(label="Georeferenced Ortho-Image?", value=True)
-                            auto_resolution = gr.Number(label="Input Resolution (mm/pixel, if not ortho)", value=None)
+                            auto_resolution = gr.Number(label="Input Resolution (mm/pixel, if not ortho)", value=0.8)
                             auto_subset = gr.Checkbox(label="Interactively Subset Image?", value=False)
 
                             with gr.Accordion("Basic Parameters", open=True):
@@ -347,8 +346,7 @@ Use the average value ({gsd_avg:.3f}) as the input_resolution parameter.
                                                        label="Max Area Misfit %")
                                 auto_minsize = gr.Slider(5, 20, value=10, step=1,
                                                         label="Min Grain Area (pixels)")
-                                auto_otsu = gr.Slider(50, 100, value=None, step=1,
-                                                     label="Otsu Threshold % (leave empty for interactive)")
+                                auto_otsu = gr.Number(label="Otsu Threshold % (0 for interactive)", value=0, minimum=0, maximum=100)
 
                             with gr.Accordion("Advanced Parameters", open=False):
                                 auto_denoise = gr.Slider(1, 10, value=5, step=1,
