@@ -24,7 +24,7 @@ dependencies:
   - shapely>=1.7.0
 
   # GUI framework (install via pip in conda env)
-  # Pin to known stable version to avoid JSON schema bug
+  # Use older stable version - 4.44.1 has JSON schema bug
   - pip
   - pip:
-    - gradio==4.44.1
+    - gradio==4.36.1
