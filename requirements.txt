@@ -7,6 +7,9 @@ scikit-image>=0.18.0
 scikit-learn>=0.24.0
 matplotlib>=3.3.0
 Pillow>=8.0.0
+
+# Geospatial libraries
+gdal>=3.0.0
 shapely>=1.7.0
 
 # GUI framework
@@ -14,20 +17,3 @@ gradio>=4.0.0
 
 # Optional: For better performance
 # numpy-mkl>=1.19.0
-
-# IMPORTANT: GDAL must be installed separately via conda or system package manager
-# It is ONLY required for processing georeferenced ortho-images
-# For non-ortho images, you can skip GDAL entirely
-#
-# To install GDAL (choose ONE method):
-#
-# Option 1 - Conda (RECOMMENDED):
-#   conda install -c conda-forge gdal
-#
-# Option 2 - Homebrew (macOS):
-#   brew install gdal
-#   pip install gdal==$(gdal-config --version)
-#
-# Option 3 - apt (Ubuntu/Debian):
-#   sudo apt-get install gdal-bin libgdal-dev
-#   pip install gdal==$(gdal-config --version)
