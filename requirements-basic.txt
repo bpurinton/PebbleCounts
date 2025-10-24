@@ -1,0 +1,16 @@
+# PebbleCounts GUI - Basic Requirements (Without GDAL)
+# Use this if you only process non-georeferenced images
+# or if you'll install GDAL separately
+
+# Core scientific computing and image processing
+numpy>=1.19.0
+scipy>=1.5.0
+opencv-python>=4.5.0
+scikit-image>=0.18.0
+scikit-learn>=0.24.0
+matplotlib>=3.3.0
+Pillow>=8.0.0
+shapely>=1.7.0
+
+# GUI framework
+gradio>=4.0.0
