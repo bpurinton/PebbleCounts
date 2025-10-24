@@ -3,8 +3,8 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  # Python
-  - python=3.9
+  # Python - use 3.10 for better Gradio compatibility
+  - python=3.10
 
   # Core scientific computing
   - numpy>=1.19.0
@@ -24,6 +24,7 @@ dependencies:
   - shapely>=1.7.0
 
   # GUI framework (install via pip in conda env)
+  # Pin to known stable version to avoid JSON schema bug
   - pip
   - pip:
-    - gradio>=4.0.0
+    - gradio==4.44.1
